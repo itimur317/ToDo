@@ -9,10 +9,6 @@ import Foundation
 
 
 struct TodoItem {
-    enum Importance: String {
-        case low, basic, important
-    }
-    
     let id: String
     let text: String
     let importance: Importance
@@ -32,6 +28,24 @@ struct TodoItem {
         self.createdAt = createdAt
         self.changedAt = changedAt
     }
-    
 }
 
+
+extension TodoItem {
+    static func fixture(
+        id: String = "",
+        text: String = "",
+        importance: Importance,
+        deadlineAt: Date? = nil,
+        isDone: Bool = false,
+        createdAt: Date = Date(timeIntervalSince1970: 100),
+        changedAt: Date? = nil) -> TodoItem {
+            return .init(id: id,
+                         text: text,
+                         importance: importance,
+                         deadlineAt: deadlineAt,
+                         isDone: isDone,
+                         createdAt: createdAt,
+                         changedAt: changedAt)
+        }
+}

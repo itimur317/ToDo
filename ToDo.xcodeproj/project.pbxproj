@@ -18,6 +18,7 @@
 		3927CA61288F37C20042BEAE /* ToDoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */; };
 		3943D63C28901AA90056851F /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3943D63B28901AA90056851F /* TodoItem.swift */; };
 		3943D63E28901ABF0056851F /* ParseJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3943D63D28901ABF0056851F /* ParseJSON.swift */; };
+		399E4F2E28918DB300D437D2 /* Importance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399E4F2D28918DB300D437D2 /* Importance.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		3943D63B28901AA90056851F /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		3943D63D28901ABF0056851F /* ParseJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseJSON.swift; sourceTree = "<group>"; };
+		399E4F2D28918DB300D437D2 /* Importance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importance.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				3943D63B28901AA90056851F /* TodoItem.swift */,
+				399E4F2D28918DB300D437D2 /* Importance.swift */,
 				3943D63D28901ABF0056851F /* ParseJSON.swift */,
 			);
 			path = TodoItem;
@@ -275,6 +278,7 @@
 				3927CA42288F37C10042BEAE /* ViewController.swift in Sources */,
 				3927CA3E288F37C10042BEAE /* AppDelegate.swift in Sources */,
 				3943D63C28901AA90056851F /* TodoItem.swift in Sources */,
+				399E4F2E28918DB300D437D2 /* Importance.swift in Sources */,
 				3927CA40288F37C10042BEAE /* SceneDelegate.swift in Sources */,
 				3943D63E28901ABF0056851F /* ParseJSON.swift in Sources */,
 			);
