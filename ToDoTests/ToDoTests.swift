@@ -436,19 +436,6 @@ class TodoItemTests: XCTestCase {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     func testTodoItemParseJsonWithoutChangedAt() throws {
         // Given
         let jsonString = """
