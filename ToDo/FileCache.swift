@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 protocol FileCacheProtocol: AnyObject {
     var items: [String: TodoItem] { get }
     
@@ -24,7 +23,6 @@ protocol FileCacheProtocol: AnyObject {
     func getAllDirNames() throws-> [String]
 }
 
-
 enum FileCacheError: Error {
     case failureDataToJson
     case failureParseTodoItem
@@ -37,7 +35,6 @@ enum FileCacheError: Error {
     case notFound
 }
 
-
 final class FileCache {
     // Выбрал словарь потому что удобнее работать, чем с множествами
     // и протоколами Hashable для них
@@ -47,7 +44,6 @@ final class FileCache {
     
     private var fileManager = FileManager.default
 }
-
 
 extension FileCache: FileCacheProtocol {
     
@@ -111,11 +107,6 @@ extension FileCache: FileCacheProtocol {
         items = [:]
         
         for id in todoItemsId {
-//            let jsonIndexStart = id.index(
-//                id.endIndex,
-//                offsetBy: -5
-//            )
-//            let idWithoutJson = String(id[..<jsonIndexStart])
             let todoItem = try getTodoItem(
                 from: dirUrl,
                 by: id
@@ -217,6 +208,4 @@ extension FileCache: FileCacheProtocol {
         
         return todoItem
     }
-        
-   
 }
