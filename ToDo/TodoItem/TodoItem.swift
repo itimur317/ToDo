@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct TodoItem {
     let id: String
     let text: String
@@ -17,9 +16,14 @@ struct TodoItem {
     let createdAt: Date // created_at
     let changedAt: Date? // changed_at
     
-    init(id: String = UUID().uuidString, text: String,
-         importance: Importance, deadlineAt: Date? = nil,
-         isDone: Bool, createdAt: Date, changedAt: Date? = nil) {
+    init(
+        text: String,
+        importance: Importance,
+        isDone: Bool,
+        createdAt: Date,
+        id: String = UUID().uuidString,
+        deadlineAt: Date? = nil,
+        changedAt: Date? = nil) {
         self.id = id
         self.text = text
         self.importance = importance
@@ -28,24 +32,4 @@ struct TodoItem {
         self.createdAt = createdAt
         self.changedAt = changedAt
     }
-}
-
-
-extension TodoItem {
-    static func fixture(
-        id: String = "",
-        text: String = "",
-        importance: Importance,
-        deadlineAt: Date? = nil,
-        isDone: Bool = false,
-        createdAt: Date = Date(timeIntervalSince1970: 100),
-        changedAt: Date? = nil) -> TodoItem {
-            return .init(id: id,
-                         text: text,
-                         importance: importance,
-                         deadlineAt: deadlineAt,
-                         isDone: isDone,
-                         createdAt: createdAt,
-                         changedAt: changedAt)
-        }
 }

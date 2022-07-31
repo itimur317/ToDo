@@ -13,12 +13,14 @@
 		3927CA45288F37C10042BEAE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3927CA43288F37C10042BEAE /* Main.storyboard */; };
 		3927CA47288F37C20042BEAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3927CA46288F37C20042BEAE /* Assets.xcassets */; };
 		3927CA4A288F37C20042BEAE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3927CA48288F37C20042BEAE /* LaunchScreen.storyboard */; };
-		3927CA55288F37C20042BEAE /* ToDoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA54288F37C20042BEAE /* ToDoTests.swift */; };
+		3927CA55288F37C20042BEAE /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA54288F37C20042BEAE /* TodoItemTests.swift */; };
 		3927CA5F288F37C20042BEAE /* ToDoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA5E288F37C20042BEAE /* ToDoUITests.swift */; };
 		3927CA61288F37C20042BEAE /* ToDoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */; };
 		3943D63C28901AA90056851F /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3943D63B28901AA90056851F /* TodoItem.swift */; };
 		3943D63E28901ABF0056851F /* ParseJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3943D63D28901ABF0056851F /* ParseJSON.swift */; };
 		399E4F2E28918DB300D437D2 /* Importance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399E4F2D28918DB300D437D2 /* Importance.swift */; };
+		39B1BC382895F21000442E51 /* TodoItem+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B1BC372895F21000442E51 /* TodoItem+Fixture.swift */; };
+		39B1BC3C289603DB00442E51 /* FileCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B1BC3B289603DB00442E51 /* FileCacheTests.swift */; };
 		39B9C3F52891E05C00780414 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B9C3F42891E05C00780414 /* FileCache.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,13 +51,15 @@
 		3927CA49288F37C20042BEAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3927CA4B288F37C20042BEAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3927CA50288F37C20042BEAE /* ToDoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3927CA54288F37C20042BEAE /* ToDoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoTests.swift; sourceTree = "<group>"; };
+		3927CA54288F37C20042BEAE /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		3927CA5A288F37C20042BEAE /* ToDoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3927CA5E288F37C20042BEAE /* ToDoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITests.swift; sourceTree = "<group>"; };
 		3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		3943D63B28901AA90056851F /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		3943D63D28901ABF0056851F /* ParseJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseJSON.swift; sourceTree = "<group>"; };
 		399E4F2D28918DB300D437D2 /* Importance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importance.swift; sourceTree = "<group>"; };
+		39B1BC372895F21000442E51 /* TodoItem+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItem+Fixture.swift"; sourceTree = "<group>"; };
+		39B1BC3B289603DB00442E51 /* FileCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheTests.swift; sourceTree = "<group>"; };
 		39B9C3F42891E05C00780414 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,7 +127,8 @@
 		3927CA53288F37C20042BEAE /* ToDoTests */ = {
 			isa = PBXGroup;
 			children = (
-				3927CA54288F37C20042BEAE /* ToDoTests.swift */,
+				39B1BC3E2896042B00442E51 /* FileCacheTests */,
+				39B1BC3D2896041D00442E51 /* TodoItemTests */,
 			);
 			path = ToDoTests;
 			sourceTree = "<group>";
@@ -145,6 +150,23 @@
 				3943D63D28901ABF0056851F /* ParseJSON.swift */,
 			);
 			path = TodoItem;
+			sourceTree = "<group>";
+		};
+		39B1BC3D2896041D00442E51 /* TodoItemTests */ = {
+			isa = PBXGroup;
+			children = (
+				3927CA54288F37C20042BEAE /* TodoItemTests.swift */,
+				39B1BC372895F21000442E51 /* TodoItem+Fixture.swift */,
+			);
+			path = TodoItemTests;
+			sourceTree = "<group>";
+		};
+		39B1BC3E2896042B00442E51 /* FileCacheTests */ = {
+			isa = PBXGroup;
+			children = (
+				39B1BC3B289603DB00442E51 /* FileCacheTests.swift */,
+			);
+			path = FileCacheTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -292,7 +314,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3927CA55288F37C20042BEAE /* ToDoTests.swift in Sources */,
+				39B1BC382895F21000442E51 /* TodoItem+Fixture.swift in Sources */,
+				3927CA55288F37C20042BEAE /* TodoItemTests.swift in Sources */,
+				39B1BC3C289603DB00442E51 /* FileCacheTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

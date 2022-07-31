@@ -7,18 +7,8 @@
 
 import Foundation
 
-
 enum Importance: String {
-    case low, basic, important
-}
-
-extension Importance {
-    func isBasic() -> Bool {
-        switch self {
-        case .basic:
-            return true
-        default:
-            return false
-        }
-    }
+    case low
+    case basic
+    case important
 }
