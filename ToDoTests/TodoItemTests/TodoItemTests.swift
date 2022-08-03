@@ -17,29 +17,6 @@ class TodoItemTests: XCTestCase {
         try super.tearDownWithError()
     }
     
-    private func makeJSON(
-        id: String = "testId",
-        text: String = "testText",
-        importance: String = "low",
-        deadline: Int = 1658797544,
-        isDone: Bool = false,
-        createdAt: Int = 1658797511,
-        changedAt: Int = 1658797533
-    ) -> String {
-        return """
-        {
-          "id": "\(id)",
-          "text": "\(text)",
-          "importance": "\(importance)",
-          "deadline": \(deadline),
-          "done": \(isDone),
-          "created_at": \(createdAt),
-          "changed_at": \(changedAt)
-        }
-        """
-    }
-
-    
     // MARK: - Test struct TodoItem
     
     func testWithNilDeadlineAt() throws {
@@ -611,6 +588,28 @@ class TodoItemTests: XCTestCase {
         
         // Then
         XCTAssertEqual(parsedTodoItem.changedAt, date)
+    }
+    
+    private func makeJSON(
+        id: String = "testId",
+        text: String = "testText",
+        importance: String = "low",
+        deadline: Int = 1658797544,
+        isDone: Bool = false,
+        createdAt: Int = 1658797511,
+        changedAt: Int = 1658797533
+    ) -> String {
+        return """
+        {
+          "id": "\(id)",
+          "text": "\(text)",
+          "importance": "\(importance)",
+          "deadline": \(deadline),
+          "done": \(isDone),
+          "created_at": \(createdAt),
+          "changed_at": \(changedAt)
+        }
+        """
     }
 }
 
