@@ -10,17 +10,12 @@ import Foundation
 protocol FileCacheProtocol: AnyObject {
     var items: [String: TodoItem] { get }
     
-    // по ТЗ
     func add(todoItem: TodoItem) throws
     func delete(todoItem: TodoItem) throws
     func save(to dir: String) throws
     func load(from dir: String) throws
-    
-    // Полезные методы
     func contains(todoItem: TodoItem) -> Bool
     func clearCache(by name: String) throws
-    func getAllFileNames(in dir: String) throws -> [String]
-    func getAllDirNames() throws-> [String]
 }
 
 enum FileCacheError: Error {
@@ -35,17 +30,13 @@ enum FileCacheError: Error {
     case notFound
 }
 
-final class FileCache {
-    // Выбрал словарь потому что удобнее работать, чем с множествами
-    // и протоколами Hashable для них
-    // Массив при большом кол-во задач будет линейное время давать
-    // [id: todoItem]
+final class FileCache: FileCacheProtocol {
     private(set) var items: [String: TodoItem] = [:]
     
     private var fileManager = FileManager.default
 }
 
-extension FileCache: FileCacheProtocol {
+extension FileCache {
     
     func add(todoItem: TodoItem) throws {
         let id = todoItem.id
@@ -69,7 +60,7 @@ extension FileCache: FileCacheProtocol {
         
     // Загрузить в файл по имени
     func save(to dir: String) throws {
-        let dirUrl = getDirUrl(by: dir)
+        let dirUrl = try getDirUrl(by: dir)
         
         // если нет директории, то cоздастся
         if !fileManager.fileExists(atPath: dirUrl.path) {
@@ -98,7 +89,7 @@ extension FileCache: FileCacheProtocol {
     
     // Достать из файла по имени
     func load(from dir: String) throws {
-        let dirUrl = getDirUrl(by: dir)
+        let dirUrl = try getDirUrl(by: dir)
         
         guard let todoItemsId = try? getTodoItemsId(from: dirUrl) else {
             throw FileCacheError.notFound
@@ -120,7 +111,7 @@ extension FileCache: FileCacheProtocol {
     }
         
     func clearCache(by name: String) throws {
-        let dirUrl = getDirUrl(by: name)
+        let dirUrl = try getDirUrl(by: name)
         
         if fileManager.fileExists(atPath: dirUrl.path) {
             do {
@@ -131,35 +122,14 @@ extension FileCache: FileCacheProtocol {
         }
     }
         
-    func getAllFileNames(in dir: String) throws -> [String] {
-        let dirUrl = getDirUrl(by: dir)
-        guard let allFileNames = try? fileManager.contentsOfDirectory(atPath: dirUrl.path) else {
-            throw FileCacheError.notFound
-        }
-        
-        return allFileNames
-    }
-        
-    func getAllDirNames() throws -> [String] {
+    private func getDirUrl(by dir: String) throws -> URL {
         let urls = fileManager.urls(
             for: .cachesDirectory,
             in: .userDomainMask
         )
-        
-        guard let cachesDirectoryUrl = urls.first,
-              let allDirNames = try? fileManager.contentsOfDirectory(atPath: cachesDirectoryUrl.path) else {
+        guard let cachesDirectoryUrl = urls.first else {
             throw FileCacheError.notFound
         }
-        
-        return allDirNames
-    }
-        
-    private func getDirUrl(by dir: String) -> URL {
-        let urls = fileManager.urls(
-            for: .cachesDirectory,
-            in: .userDomainMask
-        )
-        let cachesDirectoryUrl = urls[0]
         
         return cachesDirectoryUrl.appendingPathComponent("\(dir)")
     }

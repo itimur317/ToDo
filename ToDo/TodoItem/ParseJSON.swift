@@ -7,21 +7,7 @@
 
 import Foundation
 
-protocol ParsingJsonProtocol {
-    static func parse(json: Any) -> TodoItem?
-    var json: Any { get }
-}
-
-extension TodoItem: ParsingJsonProtocol {
-    enum Key: String {
-        case id
-        case text
-        case importance
-        case deadlineAt = "deadline"
-        case isDone = "done"
-        case createdAt = "created_at"
-        case changedAt = "changed_at"
-    }
+extension TodoItem {
     
     static func parse(json: Any) -> TodoItem? {
         guard let dict = json as? [String: Any] else {
@@ -32,65 +18,48 @@ extension TodoItem: ParsingJsonProtocol {
     
     var json: Any {
         var dict: [String: Any] = [
-            Key.id.rawValue: id,
-            Key.text.rawValue: text,
-            Key.isDone.rawValue: isDone,
-            Key.createdAt.rawValue: createdAt.timeIntervalSince1970,
+            KeyTodoItem.id: id,
+            KeyTodoItem.text: text,
+            KeyTodoItem.isDone: isDone,
+            KeyTodoItem.createdAt: createdAt.timeIntervalSince1970,
         ]
         
         if importance != .basic {
-            dict[Key.importance.rawValue] = importance.rawValue
+            dict[KeyTodoItem.importance] = importance.rawValue
         }
         
         if let deadlineAt = deadlineAt {
-            dict[Key.deadlineAt.rawValue] = deadlineAt.timeIntervalSince1970
+            dict[KeyTodoItem.deadlineAt] = deadlineAt.timeIntervalSince1970
         }
         
         if let changedAt = changedAt {
-            dict[Key.changedAt.rawValue] = changedAt.timeIntervalSince1970
+            dict[KeyTodoItem.changedAt] = changedAt.timeIntervalSince1970
         }
         
         return dict
     }
 }
 
-// MARK: - parse JSON tools
+// MARK: - parse JSON
 extension TodoItem {
     private init?(from dict: [String: Any]) {
-        guard let id = dict[Key.id.rawValue] as? String,
-              let text = dict[Key.text.rawValue] as? String,
-              let createdAt = TodoItem.getDate(
-            from: Key.createdAt,
-            using: dict
-        ) else {
-                  return nil
-              }
+        guard
+            let id = dict[KeyTodoItem.id] as? String,
+            let text = dict[KeyTodoItem.text] as? String,
+            let createdAt = ((dict[KeyTodoItem.createdAt] as? Double).flatMap {
+                Date(timeIntervalSince1970: TimeInterval($0))
+            }) else {
+                return nil
+            }
         
-        let isDone = dict[Key.isDone.rawValue] as? Bool ?? false
+        let isDone = dict[KeyTodoItem.isDone] as? Bool ?? false
+        let importance = (dict[KeyTodoItem.importance] as? String).flatMap(Importance.init) ?? .basic
         
-        guard let importance = TodoItem.getImportance(using: dict) else {
-            return nil
+        let changedAt = (dict[KeyTodoItem.changedAt] as? Double).flatMap {
+            Date(timeIntervalSince1970: TimeInterval($0))
         }
-        
-        let deadlineAt = TodoItem.getDate(
-            from: Key.deadlineAt,
-            using: dict
-        )
-        
-        
-        let changedAt = TodoItem.getDate(
-            from: Key.changedAt,
-            using: dict
-        )
-        
-        // проверка на то, что изменения будут позже, чем создание
-        if let changedAt = changedAt, changedAt < createdAt {
-            return nil
-        }
-        
-        // проверка на то, что дедлайн будет позже, чем создание
-        if let deadlineAt = deadlineAt, deadlineAt < createdAt {
-            return nil
+        let deadlineAt = (dict[KeyTodoItem.deadlineAt] as? Double).flatMap {
+            Date(timeIntervalSince1970: TimeInterval($0))
         }
         
         self.init(
@@ -103,49 +72,4 @@ extension TodoItem {
             changedAt: changedAt
         )
     }
-        
-    private static func getImportance(using dict: [String: Any]) -> Importance? {
-        // Если не получилось достать, то там nil => .basic
-        guard let importanceAny = dict[Key.importance.rawValue] else {
-            return .basic
-        }
-        
-        // Если получилось достать, но "важность" не строковая(что-то не то) => nil
-        guard let importanceString = importanceAny as? String else {
-            return nil
-        }
-        
-        switch importanceString {
-        case Importance.low.rawValue:
-            return .low
-        case Importance.basic.rawValue:
-            return .basic
-        case Importance.important.rawValue:
-            return .important
-        default:
-            return nil
-        }
-    }
-    
-    private static func getDate(
-        from key: Key,
-        using dict: [String: Any]
-    ) -> Date? {
-        guard let dateAtDouble = dict[key.rawValue] as? Double?,
-              let date = TodoItem.getDate(from: dateAtDouble) else {
-                  return nil
-              }
-        
-        return date
-    }
-    
-    private static func getDate(from seconds: Double?) -> Date? {
-        guard let seconds = seconds, seconds > 0 else {
-            return nil
-        }
-        return Date(timeIntervalSince1970: seconds)
-    }
 }
-
-
-

@@ -17,6 +17,29 @@ class TodoItemTests: XCTestCase {
         try super.tearDownWithError()
     }
     
+    private func makeJSON(
+        id: String = "testId",
+        text: String = "testText",
+        importance: String = "low",
+        deadline: Int = 1658797544,
+        isDone: Bool = false,
+        createdAt: Int = 1658797511,
+        changedAt: Int = 1658797533
+    ) -> String {
+        return """
+        {
+          "id": "\(id)",
+          "text": "\(text)",
+          "importance": "\(importance)",
+          "deadline": \(deadline),
+          "done": \(isDone),
+          "created_at": \(createdAt),
+          "changed_at": \(changedAt)
+        }
+        """
+    }
+
+    
     // MARK: - Test struct TodoItem
     
     func testWithNilDeadlineAt() throws {
@@ -71,17 +94,7 @@ class TodoItemTests: XCTestCase {
     
     func testParseJsonWithAllProperty() throws {
         // Given
-        let jsonString = """
-        {
-          "id": "testId",
-          "text": "testText",
-          "importance": "low",
-          "deadline": 1658797544,
-          "done": false,
-          "created_at": 1658797511,
-          "changed_at": 1658797533
-        }
-        """
+        let jsonString = makeJSON()
         
         // When
         let jsonData = try XCTUnwrap(jsonString.data(using: .utf8))
@@ -237,68 +250,6 @@ class TodoItemTests: XCTestCase {
         )
     }
     
-    func testParseJsonWithImportanceIncorrectType() throws {
-        // Given
-        let jsonString = """
-        {
-          "id": "testId",
-          "text": "testText",
-          "importance": false,
-          "deadline": 1658797544,
-          "done": false,
-          "created_at": 1658797511,
-          "changed_at": 1658797533
-        }
-        """
-        
-        // When
-        let jsonData = try XCTUnwrap(jsonString.data(using: .utf8))
-        
-        guard let json = try? JSONSerialization.jsonObject(
-            with: jsonData,
-            options: .fragmentsAllowed
-        ) else {
-            return XCTFail("Get JSON from Data failed")
-        }
-        XCTAssert(JSONSerialization.isValidJSONObject(json), "Invalid JSON")
-        
-        // Then
-        if let _ = TodoItem.parse(json: json) {
-            return XCTFail("Parsing failed")
-        }
-    }
-    
-    func testParseJsonWithImportanceIncorrectString() throws {
-        // Given
-        let jsonString = """
-        {
-          "id": "testId",
-          "text": "testText",
-          "importance": "very important",
-          "deadline": 1658797544,
-          "done": false,
-          "created_at": 1658797511,
-          "changed_at": 1658797533
-        }
-        """
-        
-        // When
-        let jsonData = try XCTUnwrap(jsonString.data(using: .utf8))
-        
-        guard let json = try? JSONSerialization.jsonObject(
-            with: jsonData,
-            options: .fragmentsAllowed
-        ) else {
-            return XCTFail("Get JSON from Data failed")
-        }
-        XCTAssert(JSONSerialization.isValidJSONObject(json), "Invalid JSON")
-        
-        // Then
-        if let _ = TodoItem.parse(json: json) {
-            return XCTFail("Parsing failed")
-        }
-    }
-    
     func testParseJsonWithoutDeadlineAt() throws {
         // Given
         let jsonString = """
@@ -393,37 +344,6 @@ class TodoItemTests: XCTestCase {
             Date(timeIntervalSince1970: 1658797544),
             todoItem.deadlineAt
         )
-    }
-    
-    func testParseJsonWithDeadlineLessThanCreatedAt() throws {
-        // Given
-        let jsonString = """
-        {
-          "id": "testId",
-          "text": "testText",
-          "importance": "low",
-          "deadline": 165879,
-          "done": false,
-          "created_at": 1658797511,
-          "changed_at": 1658797533
-        }
-        """
-        
-        // When
-        let jsonData = try XCTUnwrap(jsonString.data(using: .utf8))
-        
-        guard let json = try? JSONSerialization.jsonObject(
-            with: jsonData,
-            options: .fragmentsAllowed
-        ) else {
-            return XCTFail("Get JSON from Data failed")
-        }
-        XCTAssert(JSONSerialization.isValidJSONObject(json), "Invalid JSON")
-        
-        // Then
-        if let _ = TodoItem.parse(json: json) {
-            return XCTFail("Parsing failed")
-        }
     }
     
     func testParseJsonWithoutCreatedAt() throws {
