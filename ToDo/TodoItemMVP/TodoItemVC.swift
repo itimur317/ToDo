@@ -8,10 +8,14 @@
 import UIKit
 
 protocol TodoItemVCProtocol: AnyObject {
+    func getDescriptionText() -> String?
+    
     func failureSaveTodoItem()
     func successSaveTodoItem()
+    
     func failureDeleteTodoItem()
     func successDeleteTodoItem()
+    
     func dismiss()
 }
 
@@ -108,13 +112,6 @@ final class TodoItemVC: UIViewController,
         return button
     }()
     
-    private var text: String? {
-        if !descriptionTextView.text.isEmpty && descriptionTextView.textColor != UIColor.lightGray {
-            return descriptionTextView.text
-        }
-        return nil
-    }
-    
     private var keyboardIndent: CGFloat = 0
     
     override func viewDidLoad() {
@@ -124,13 +121,21 @@ final class TodoItemVC: UIViewController,
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         self.isDismissed?()
     }
     
     private func setup() {
-
-        // MARK: - Keyboard settings
+        setKeyboardSettings()
+        setDescriptionText()
+        setEnvironment()
+        setTableWidth()
+        addSubviews()
+        setDelegates()
+        textViewDidChange(descriptionTextView)
+        setConstraints()
+    }
+    
+    private func setKeyboardSettings() {
         self.hideKeyboardWhenTappedAround()
         NotificationCenter.default.addObserver(
             self,
@@ -138,20 +143,22 @@ final class TodoItemVC: UIViewController,
             name: UIResponder.keyboardWillShowNotification,
             object: nil
         )
-          NotificationCenter.default.addObserver(
+        NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillHide),
             name: UIResponder.keyboardWillHideNotification,
             object: nil
-          )
-        
-        // MARK: - TextView text
-        if let text = presenter.text {
+        )
+    }
+    
+    private func setDescriptionText() {
+        if let text = presenter.getText() {
             descriptionTextView.text = text
             descriptionTextView.textColor = UIColor(named: "cellText")
         }
-        
-        // MARK: - ViewController elements
+    }
+    
+    private func setEnvironment() {
         title = "Дело"
         view.backgroundColor = UIColor(named: "addTodoItemBackground")
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -166,30 +173,25 @@ final class TodoItemVC: UIViewController,
             target: self,
             action: #selector(didTapCancelButton)
         )
-        
-        // MARK: - tableWidth
+    }
+    
+    private func setTableWidth() {
         tableWidth = view.frame.width < view.frame.height ? view.frame.width : view.frame.height
         tableWidth -= 40
-        
-        // MARK: - addSubview
+    }
+    
+    private func addSubviews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         scrollView.addSubview(descriptionTextView)
         scrollView.addSubview(impAndDeadlinTableView)
         scrollView.addSubview(deleteButton)
-        
-        // MARK: - Delegate settings
+    }
+    
+    private func setDelegates() {
         descriptionTextView.delegate = self
         impAndDeadlinTableView.delegate = self
         impAndDeadlinTableView.dataSource = self
-        
-        // MARK: - Constraints
-        textViewDidChange(descriptionTextView)
-        setConstraints()
-        
-//        if presenter.willSaveDeadline {
-//            updateTableView()
-//        }
     }
     
     private func setConstraints() {
@@ -201,6 +203,7 @@ final class TodoItemVC: UIViewController,
         ])
         
         let contentScrollView = scrollView.contentLayoutGuide
+        
         NSLayoutConstraint.activate([
             contentView.bottomAnchor.constraint(equalTo: contentScrollView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: contentScrollView.leadingAnchor),
@@ -257,7 +260,7 @@ final class TodoItemVC: UIViewController,
             )
         ])
         
-        if presenter.willSaveDeadline {
+        if presenter.getWillSaveDeadline() {
             cellAmount = 3
             impAndDeadlinTableView.heightAnchor.constraint(equalToConstant: cellHeight * 2 + tableWidth).isActive = true
         } else {
@@ -297,10 +300,7 @@ final class TodoItemVC: UIViewController,
                 constraint.constant = constraint.constant == cellHeight * 2 ?
                 cellHeight * 2 + tableWidth : cellHeight * 2
                 impAndDeadlinTableView.reloadRows(
-                    at: [IndexPath(
-                        row: 2,
-                        section: 0
-                    )],
+                    at: [IndexPath(row: 2, section: 0 )],
                     with: .none
                 )
             }
@@ -309,7 +309,6 @@ final class TodoItemVC: UIViewController,
     
     @objc
     private func didTapSaveButton(_: UIButton) {
-        presenter.text = text
         presenter.saveTodoItem()
     }
     
@@ -357,6 +356,67 @@ extension TodoItemVC {
     }
 }
 
+// MARK: - UITableViewDataSource
+
+extension TodoItemVC {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        cellAmount
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.row {
+        case 0:
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: "Importance",
+                for: indexPath
+            ) as? ImportanceCell else {
+                return UITableViewCell()
+            }
+            cell.configure(
+                height: cellHeight,
+                importance: presenter.getImportance() ?? .basic
+            )
+            cell.selectionStyle = .none
+            cell.delegate = self
+            return cell
+            
+        case 1:
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: "Deadline",
+                for: indexPath
+            ) as? DeadlineCell else {
+                return UITableViewCell()
+            }
+            cell.configure(
+                height: cellHeight,
+                deadline: presenter.getDeadline() ?? Date.nextDay,
+                willSave: presenter.getWillSaveDeadline()
+            )
+            cell.selectionStyle = .none
+            cell.delegate = self
+            return cell
+            
+        case 2:
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: "DatePicker",
+                for: indexPath
+            ) as? DatePickerCell else {
+                return UITableViewCell()
+            }
+            cell.configure(
+                width: tableWidth,
+                date: presenter.getDeadline() ?? .nextDay
+            )
+            presenter.setDeadline(cell.deadline)
+            cell.selectionStyle = .none
+            cell.delegate = self
+            return cell
+        default:
+           return UITableViewCell()
+        }
+    }
+}
+
 // MARK: - UITableViewDelegate
 
 extension TodoItemVC {
@@ -377,7 +437,7 @@ extension TodoItemVC {
         cell: ImportanceCell,
         importance: Importance
     ) {
-        presenter.importance = importance
+        presenter.setImportance(importance)
     }
 }
 
@@ -388,8 +448,7 @@ extension TodoItemVC {
         cell: DeadlineCell,
         willSave: Bool
     ) {
-        presenter.willSaveDeadline = willSave
-        print(willSave)
+        presenter.setWillSaveDeadline(willSave)
     }
     
     func showDatePicker(cell: DeadlineCell) {
@@ -404,76 +463,21 @@ extension TodoItemVC {
         cell: DatePickerCell,
         date: Date
     ) {
-        presenter.deadlineAt = date
+        presenter.setDeadline(date)
         impAndDeadlinTableView.reloadData()
-    }
-}
-
-// MARK: - UITableViewDataSource
-
-extension TodoItemVC {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        cellAmount
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.row {
-        case 0:
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: "Importance",
-                for: indexPath
-            ) as? ImportanceCell else {
-                return UITableViewCell()
-            }
-            cell.configure(
-                height: cellHeight,
-                importance: presenter.importance ?? .basic
-            )
-            cell.selectionStyle = .none
-            cell.delegate = self
-
-            return cell
-        case 1:
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: "Deadline",
-                for: indexPath
-            ) as? DeadlineCell else {
-                return UITableViewCell()
-            }
-            cell.configure(
-                height: cellHeight,
-                deadline: presenter.deadlineAt ?? Date.nextDay,
-                willSave: presenter.willSaveDeadline
-            )
-            cell.selectionStyle = .none
-            cell.delegate = self
-            
-            return cell
-        case 2:
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: "DatePicker",
-                for: indexPath
-            ) as? DatePickerCell else {
-                return UITableViewCell()
-            }
-            cell.configure(
-                width: tableWidth,
-                date: presenter.deadlineAt ?? .nextDay
-            )
-            presenter.deadlineAt = cell.deadline
-            cell.selectionStyle = .none
-            cell.delegate = self
-            
-            return cell
-        default:
-           return UITableViewCell()
-        }
     }
 }
 
 // MARK: - TodoItemVCProtocol
 
 extension TodoItemVC {
+    func getDescriptionText() -> String? {
+        if !descriptionTextView.text.isEmpty && descriptionTextView.textColor != UIColor.lightGray {
+            return descriptionTextView.text
+        }
+        return nil
+    }
+    
     func failureSaveTodoItem() {
         let alert = UIAlertController(
             title: "Ошибка!",
@@ -501,7 +505,9 @@ extension TodoItemVC {
         alert.addAction(UIAlertAction(
             title: "Ок",
             style: .default,
-            handler: nil
+            handler: { _ in
+                self.dismiss(animated: true, completion: nil)
+            }
         ))
         present(
             alert,
@@ -537,13 +543,19 @@ extension TodoItemVC {
         alert.addAction(UIAlertAction(
             title: "Ок",
             style: .default,
-            handler: nil
+            handler: { _ in
+                self.dismiss(animated: true, completion: nil)
+            }
         ))
         present(
             alert,
             animated: true,
             completion: nil
         )
+    }
+    
+    func dismiss() {
+        self.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -578,9 +590,5 @@ extension TodoItemVC {
         )
         scrollView.contentInset = contentInsets
         scrollView.scrollIndicatorInsets = contentInsets
-    }
-    
-    func dismiss() {
-        self.dismiss(animated: true, completion: nil)
     }
 }

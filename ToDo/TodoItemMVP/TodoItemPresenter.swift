@@ -8,10 +8,16 @@
 import Foundation
 
 protocol TodoItemPresenterProtocol: AnyObject {
-    var text: String? { get set }
-    var deadlineAt: Date? { get set }
-    var willSaveDeadline: Bool { get set }
-    var importance: Importance? { get set }
+    func getText() -> String?
+    
+    func setDeadline(_ deadlineAt: Date?)
+    func getDeadline() -> Date?
+    
+    func setImportance(_ importance: Importance)
+    func getImportance() -> Importance?
+    
+    func setWillSaveDeadline(_ willSave: Bool)
+    func getWillSaveDeadline() -> Bool
     
     func cancelEdit()
     func saveTodoItem()
@@ -32,15 +38,16 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     
     weak var todoItemVC: TodoItemVCProtocol?
     
-    var text: String?
-    var importance: Importance?
-    var deadlineAt: Date?
+    private var text: String?
+    private var importance: Importance?
+    private var deadlineAt: Date?
     
-    var willSaveDeadline: Bool = false
+    private var willSaveDeadline: Bool = false
     
     private var isDone: Bool?
     private var createdAt: Date?
     private var id: String?
+    
     private let fileCache = FileCache()
     
     private let isEditing: Bool
@@ -68,11 +75,39 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
         }
     }
     
+    func getText() -> String? {
+        return text 
+    }
+
+    
+    func setWillSaveDeadline(_ willSave: Bool) {
+        willSaveDeadline = willSave
+    }
+    func getWillSaveDeadline() -> Bool {
+        willSaveDeadline
+    }
+    
+    func setImportance(_ importance: Importance) {
+        self.importance = importance
+    }
+    func getImportance() -> Importance? {
+        return importance
+    }
+    
+    func setDeadline(_ deadlineAt: Date?) {
+        self.deadlineAt = deadlineAt
+    }
+    func getDeadline() -> Date? {
+        return deadlineAt
+    }
+    
     func cancelEdit() {
         todoItemVC?.dismiss()
     }
     
     func saveTodoItem() {
+        text = todoItemVC?.getDescriptionText()
+        
         guard
             let text = text,
             let importance = importance
@@ -94,37 +129,25 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
         
         // Если это дело в кэше, то оно удалиться,
         // чтобы занести это же дело с изменениями(и с другим id)
-        
         if isEditing {
-            guard
-                let id = id,
-                (try? fileCache.load(from: dir)) != nil,
-                (try? fileCache.add(todoItem: todoItem)) != nil,
-                (try? fileCache.delete(id: id)) != nil,
-                (try? fileCache.clearCache(by: dir)) != nil,
-                (try? fileCache.save(to: dir)) != nil
-            else {
-                todoItemVC?.failureSaveTodoItem()
-                return
-            }
+            saveWhenEditing(todoItem: todoItem)
         }
         else {
-            guard
-                (try? fileCache.load(from: dir)) != nil,
-                (try? fileCache.add(todoItem: todoItem)) != nil,
-                (try? fileCache.clearCache(by: dir)) != nil,
-                (try? fileCache.save(to: dir)) != nil
-            else {
-                todoItemVC?.failureSaveTodoItem()
-                return
-            }
+            saveWhenCreating(todoItem: todoItem)
         }
-        
         
         todoItemVC?.successSaveTodoItem()
     }
-    
+
     func deleteTodoItem() {
+        if isEditing {
+            deleteWhenEditing()
+        } else {
+            todoItemVC?.dismiss()
+        }
+    }
+    
+    private func deleteWhenEditing() {
         guard let id = id else {
             todoItemVC?.failureDeleteTodoItem()
             return
@@ -132,12 +155,39 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
         do {
             try fileCache.load(from: dir)
             try fileCache.delete(id: id)
-            try fileCache.clearCache(by: "Main")
+            try fileCache.clearCache(by: dir)
             try fileCache.save(to: dir)
         }
         catch {
             todoItemVC?.failureDeleteTodoItem()
         }
+        
         todoItemVC?.successDeleteTodoItem()
+    }
+    
+    private func saveWhenEditing(todoItem: TodoItem) {
+        guard
+            let id = id,
+            (try? fileCache.load(from: dir)) != nil,
+            (try? fileCache.add(todoItem: todoItem)) != nil,
+            (try? fileCache.delete(id: id)) != nil,
+            (try? fileCache.clearCache(by: dir)) != nil,
+            (try? fileCache.save(to: dir)) != nil
+        else {
+            todoItemVC?.failureSaveTodoItem()
+            return
+        }
+    }
+    
+    private func saveWhenCreating(todoItem: TodoItem) {
+        guard
+            (try? fileCache.load(from: dir)) != nil,
+            (try? fileCache.add(todoItem: todoItem)) != nil,
+            (try? fileCache.clearCache(by: dir)) != nil,
+            (try? fileCache.save(to: dir)) != nil
+        else {
+            todoItemVC?.failureSaveTodoItem()
+            return
+        }
     }
 }

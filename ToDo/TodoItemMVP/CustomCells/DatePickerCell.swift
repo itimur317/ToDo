@@ -49,12 +49,12 @@ final class DatePickerCell: UITableViewCell {
     func configure(width: CGFloat, date: Date) {
         height = width
         datePicker.date = date
+        setConstraints()
     }
     
     private func setup() {
         backgroundColor = UIColor(named: "cellsAddTodoItemBackground")
         addSubview(datePicker)
-        setConstraints()
     }
     
     private func setConstraints() {

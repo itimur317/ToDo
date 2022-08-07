@@ -120,11 +120,6 @@ final class ListTodoItemsVC: UIViewController,
         tableHeightConstraint?.constant = listTableView.contentSize.height
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        presenter.viewDidLoad()
-    }
-    
     private func setup() {
         setEnvironment()
         addSubviews()
@@ -257,6 +252,7 @@ extension ListTodoItemsVC {
             return nil
         }
         let todoItem = presenter.getTodoItems()[indexPath.row]
+        
         if todoItem.isDone {
             return nil
         }

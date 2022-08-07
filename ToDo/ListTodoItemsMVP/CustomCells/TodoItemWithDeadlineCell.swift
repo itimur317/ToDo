@@ -196,4 +196,3 @@ final class TodoItemWithDeadlineCell: UITableViewCell {
         ])
     }
 }
-
