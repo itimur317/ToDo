@@ -41,7 +41,7 @@ final class TodoItemVC: UIViewController,
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var scrollView: UIScrollView = {
+    private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = UIColor(named: "addTodoItemBackground")
         scrollView.isScrollEnabled = true
@@ -50,14 +50,14 @@ final class TodoItemVC: UIViewController,
         return scrollView
     }()
 
-    private var contentView: UIView = {
+    private let contentView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(named: "addTodoItemBackground")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private var descriptionTextView: UITextView = {
+    private let descriptionTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = UIColor(named: "cellsAddTodoItemBackground")
         textView.font = UIFont.systemFont(ofSize: 20)
@@ -70,7 +70,7 @@ final class TodoItemVC: UIViewController,
         return textView
     }()
     
-    private var minDescriptionTextViewHeight: CGFloat = 120
+    private let minDescriptionTextViewHeight: CGFloat = 120
     
     private let impAndDeadlinTableView: UITableView = {
         let tableView = UITableView()
@@ -96,7 +96,7 @@ final class TodoItemVC: UIViewController,
     private let cellHeight: CGFloat = 50
     private var tableWidth: CGFloat = 320
     
-    private var deleteButton: UIButton = {
+    private let deleteButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(named: "cellsAddTodoItemBackground")
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18)

@@ -34,7 +34,7 @@ final class ListTodoItemsVC: UIViewController,
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var doneLabel: UILabel = {
+    private let doneLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = UIColor(named: "listBackground")
         label.textColor = .lightGray
@@ -44,7 +44,7 @@ final class ListTodoItemsVC: UIViewController,
         return label
     }()
     
-    private var showHideButton: UIButton = {
+    private let showHideButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(named: "listBackground")
         button.setTitleColor(
@@ -62,7 +62,7 @@ final class ListTodoItemsVC: UIViewController,
         return button
     }()
     
-    private var listTableView: UITableView = {
+    private let listTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = UIColor(named: "cellsAddTodoItemBackground")
         tableView.register(
@@ -86,7 +86,7 @@ final class ListTodoItemsVC: UIViewController,
     
     private var tableHeightConstraint: NSLayoutConstraint?
     
-    private var addTodoItemButton: UIButton = {
+    private let addTodoItemButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(named: "listBackground")
         let config = UIImage.SymbolConfiguration(
