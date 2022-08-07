@@ -11,7 +11,7 @@ protocol FileCacheProtocol: AnyObject {
     var items: [String: TodoItem] { get }
     
     func add(todoItem: TodoItem) throws
-    func delete(todoItem: TodoItem) throws
+    func delete(id: String) throws
     func save(to dir: String) throws
     func load(from dir: String) throws
     func contains(todoItem: TodoItem) -> Bool
@@ -48,9 +48,7 @@ extension FileCache {
         }
     }
     
-    func delete(todoItem: TodoItem) throws {
-        let id = todoItem.id
-        
+    func delete(id: String) throws {
         if items[id] != nil {
             items[id] = nil
         } else {
@@ -145,7 +143,7 @@ extension FileCache {
         
         let fileUrl = dir.appendingPathComponent("\(todoItem.id).json")
         
-        guard let _ = try? data.write(to: fileUrl) else {
+        guard (try? data.write(to: fileUrl)) != nil else {
             throw FileCacheError.failureSaveTodoItem
         }
     }

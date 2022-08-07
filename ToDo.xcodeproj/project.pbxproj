@@ -16,6 +16,18 @@
 		3927CA55288F37C20042BEAE /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA54288F37C20042BEAE /* TodoItemTests.swift */; };
 		3927CA5F288F37C20042BEAE /* ToDoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA5E288F37C20042BEAE /* ToDoUITests.swift */; };
 		3927CA61288F37C20042BEAE /* ToDoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */; };
+		3929F17C289FFDAA00FFCE6E /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F17B289FFDAA00FFCE6E /* Date+Extension.swift */; };
+		3929F17E289FFDBD00FFCE6E /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F17D289FFDBD00FFCE6E /* UIViewController.swift */; };
+		3929F181289FFE0A00FFCE6E /* TodoItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F180289FFE0A00FFCE6E /* TodoItemVC.swift */; };
+		3929F183289FFE1C00FFCE6E /* TodoItemPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F182289FFE1C00FFCE6E /* TodoItemPresenter.swift */; };
+		3929F186289FFE3D00FFCE6E /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F185289FFE3D00FFCE6E /* DatePickerCell.swift */; };
+		3929F188289FFE4A00FFCE6E /* DeadlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F187289FFE4A00FFCE6E /* DeadlineCell.swift */; };
+		3929F18A289FFE5E00FFCE6E /* ImportanceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F189289FFE5E00FFCE6E /* ImportanceCell.swift */; };
+		3929F18D289FFF2700FFCE6E /* ListTodoItemsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F18C289FFF2700FFCE6E /* ListTodoItemsVC.swift */; };
+		3929F18F289FFF3D00FFCE6E /* ListTodoItemsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F18E289FFF3D00FFCE6E /* ListTodoItemsPresenter.swift */; };
+		3929F192289FFF6E00FFCE6E /* NewTodoItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F191289FFF6E00FFCE6E /* NewTodoItemCell.swift */; };
+		3929F194289FFF8300FFCE6E /* TodoItemWithDeadlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F193289FFF8300FFCE6E /* TodoItemWithDeadlineCell.swift */; };
+		3929F196289FFF9A00FFCE6E /* TodoItemWithoutDeadlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F195289FFF9900FFCE6E /* TodoItemWithoutDeadlineCell.swift */; };
 		3943D63C28901AA90056851F /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3943D63B28901AA90056851F /* TodoItem.swift */; };
 		3943D63E28901ABF0056851F /* ParseJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3943D63D28901ABF0056851F /* ParseJSON.swift */; };
 		399E4F2E28918DB300D437D2 /* Importance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399E4F2D28918DB300D437D2 /* Importance.swift */; };
@@ -55,6 +67,18 @@
 		3927CA5A288F37C20042BEAE /* ToDoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3927CA5E288F37C20042BEAE /* ToDoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITests.swift; sourceTree = "<group>"; };
 		3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		3929F17B289FFDAA00FFCE6E /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		3929F17D289FFDBD00FFCE6E /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		3929F180289FFE0A00FFCE6E /* TodoItemVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemVC.swift; sourceTree = "<group>"; };
+		3929F182289FFE1C00FFCE6E /* TodoItemPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemPresenter.swift; sourceTree = "<group>"; };
+		3929F185289FFE3D00FFCE6E /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
+		3929F187289FFE4A00FFCE6E /* DeadlineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlineCell.swift; sourceTree = "<group>"; };
+		3929F189289FFE5E00FFCE6E /* ImportanceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportanceCell.swift; sourceTree = "<group>"; };
+		3929F18C289FFF2700FFCE6E /* ListTodoItemsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTodoItemsVC.swift; sourceTree = "<group>"; };
+		3929F18E289FFF3D00FFCE6E /* ListTodoItemsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTodoItemsPresenter.swift; sourceTree = "<group>"; };
+		3929F191289FFF6E00FFCE6E /* NewTodoItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTodoItemCell.swift; sourceTree = "<group>"; };
+		3929F193289FFF8300FFCE6E /* TodoItemWithDeadlineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemWithDeadlineCell.swift; sourceTree = "<group>"; };
+		3929F195289FFF9900FFCE6E /* TodoItemWithoutDeadlineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemWithoutDeadlineCell.swift; sourceTree = "<group>"; };
 		3943D63B28901AA90056851F /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		3943D63D28901ABF0056851F /* ParseJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseJSON.swift; sourceTree = "<group>"; };
 		399E4F2D28918DB300D437D2 /* Importance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importance.swift; sourceTree = "<group>"; };
@@ -113,8 +137,11 @@
 			children = (
 				3927CA3D288F37C10042BEAE /* AppDelegate.swift */,
 				3927CA3F288F37C10042BEAE /* SceneDelegate.swift */,
+				3929F17A289FFD9C00FFCE6E /* Extensions */,
 				3943D63A28901A9E0056851F /* TodoItem */,
 				3927CA41288F37C10042BEAE /* ViewController.swift */,
+				3929F18B289FFE7900FFCE6E /* ListTodoItemsMVP */,
+				3929F17F289FFDF700FFCE6E /* TodoItemMVP */,
 				39B9C3F42891E05C00780414 /* FileCache.swift */,
 				3927CA43288F37C10042BEAE /* Main.storyboard */,
 				3927CA46288F37C20042BEAE /* Assets.xcassets */,
@@ -140,6 +167,55 @@
 				3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */,
 			);
 			path = ToDoUITests;
+			sourceTree = "<group>";
+		};
+		3929F17A289FFD9C00FFCE6E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3929F17B289FFDAA00FFCE6E /* Date+Extension.swift */,
+				3929F17D289FFDBD00FFCE6E /* UIViewController.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		3929F17F289FFDF700FFCE6E /* TodoItemMVP */ = {
+			isa = PBXGroup;
+			children = (
+				3929F180289FFE0A00FFCE6E /* TodoItemVC.swift */,
+				3929F182289FFE1C00FFCE6E /* TodoItemPresenter.swift */,
+				3929F184289FFE2500FFCE6E /* CustomCells */,
+			);
+			path = TodoItemMVP;
+			sourceTree = "<group>";
+		};
+		3929F184289FFE2500FFCE6E /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				3929F185289FFE3D00FFCE6E /* DatePickerCell.swift */,
+				3929F187289FFE4A00FFCE6E /* DeadlineCell.swift */,
+				3929F189289FFE5E00FFCE6E /* ImportanceCell.swift */,
+			);
+			path = CustomCells;
+			sourceTree = "<group>";
+		};
+		3929F18B289FFE7900FFCE6E /* ListTodoItemsMVP */ = {
+			isa = PBXGroup;
+			children = (
+				3929F18C289FFF2700FFCE6E /* ListTodoItemsVC.swift */,
+				3929F18E289FFF3D00FFCE6E /* ListTodoItemsPresenter.swift */,
+				3929F190289FFF4500FFCE6E /* CustomCells */,
+			);
+			path = ListTodoItemsMVP;
+			sourceTree = "<group>";
+		};
+		3929F190289FFF4500FFCE6E /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				3929F191289FFF6E00FFCE6E /* NewTodoItemCell.swift */,
+				3929F193289FFF8300FFCE6E /* TodoItemWithDeadlineCell.swift */,
+				3929F195289FFF9900FFCE6E /* TodoItemWithoutDeadlineCell.swift */,
+			);
+			path = CustomCells;
 			sourceTree = "<group>";
 		};
 		3943D63A28901A9E0056851F /* TodoItem */ = {
@@ -300,13 +376,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3929F188289FFE4A00FFCE6E /* DeadlineCell.swift in Sources */,
+				3929F183289FFE1C00FFCE6E /* TodoItemPresenter.swift in Sources */,
 				3927CA42288F37C10042BEAE /* ViewController.swift in Sources */,
+				3929F196289FFF9A00FFCE6E /* TodoItemWithoutDeadlineCell.swift in Sources */,
+				3929F192289FFF6E00FFCE6E /* NewTodoItemCell.swift in Sources */,
+				3929F18F289FFF3D00FFCE6E /* ListTodoItemsPresenter.swift in Sources */,
 				3927CA3E288F37C10042BEAE /* AppDelegate.swift in Sources */,
+				3929F17E289FFDBD00FFCE6E /* UIViewController.swift in Sources */,
 				39B9C3F52891E05C00780414 /* FileCache.swift in Sources */,
 				3943D63C28901AA90056851F /* TodoItem.swift in Sources */,
 				399E4F2E28918DB300D437D2 /* Importance.swift in Sources */,
+				3929F194289FFF8300FFCE6E /* TodoItemWithDeadlineCell.swift in Sources */,
+				3929F17C289FFDAA00FFCE6E /* Date+Extension.swift in Sources */,
 				3927CA40288F37C10042BEAE /* SceneDelegate.swift in Sources */,
 				3943D63E28901ABF0056851F /* ParseJSON.swift in Sources */,
+				3929F18A289FFE5E00FFCE6E /* ImportanceCell.swift in Sources */,
+				3929F18D289FFF2700FFCE6E /* ListTodoItemsVC.swift in Sources */,
+				3929F181289FFE0A00FFCE6E /* TodoItemVC.swift in Sources */,
+				3929F186289FFE3D00FFCE6E /* DatePickerCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
