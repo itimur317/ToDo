@@ -33,8 +33,7 @@ final class ListTodoItemsPresenter: ListTodoItemsPresenterProtocol {
     func viewDidLoad() {
         do {
             try fileCache.load(from: dir)
-        }
-        catch {
+        } catch {
             // Протестировал, тут всё ок
             // просто вернется пустая коллекция
             
@@ -102,8 +101,7 @@ extension ListTodoItemsPresenter {
                     return
                 }
             }
-        }
-        catch {
+        } catch {
             listTodoItemsVC?.alertWith(text: "Удалить не получилось!")
         }
     }
@@ -131,8 +129,7 @@ extension ListTodoItemsPresenter {
                     return
                 }
             }
-        }
-        catch {
+        } catch {
             return
         }
         

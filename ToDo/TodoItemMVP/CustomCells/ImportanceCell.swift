@@ -38,7 +38,7 @@ final class ImportanceCell: UITableViewCell {
         return label
     }()
     
-    private var importanceSegmentedControl: UISegmentedControl = {
+    private lazy var importanceSegmentedControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["", "нет", ""])
         segmentedControl.backgroundColor = UIColor(named: "segmentedControlBackground")
         segmentedControl.setImage(

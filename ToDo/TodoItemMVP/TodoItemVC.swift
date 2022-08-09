@@ -96,7 +96,7 @@ final class TodoItemVC: UIViewController,
     private let cellHeight: CGFloat = 50
     private var tableWidth: CGFloat = 320
     
-    private let deleteButton: UIButton = {
+    private lazy var deleteButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(named: "cellsAddTodoItemBackground")
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
@@ -199,7 +199,7 @@ final class TodoItemVC: UIViewController,
             scrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             scrollView.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
         ])
         
         let contentScrollView = scrollView.contentLayoutGuide
@@ -208,7 +208,7 @@ final class TodoItemVC: UIViewController,
             contentView.bottomAnchor.constraint(equalTo: contentScrollView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: contentScrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: contentScrollView.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: contentScrollView.topAnchor),
+            contentView.topAnchor.constraint(equalTo: contentScrollView.topAnchor)
         ])
         
         let contentViewCenterY = contentView.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor)
@@ -363,7 +363,10 @@ extension TodoItemVC {
         cellAmount
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         switch indexPath.row {
         case 0:
             guard let cell = tableView.dequeueReusableCell(
@@ -566,7 +569,9 @@ extension TodoItemVC {
     // протестирован
     @objc
     private func keyboardWillShow(notification: NSNotification) {
-        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+        guard
+            let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
+                                as? NSValue)?.cgRectValue else {
             return
         }
         

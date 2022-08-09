@@ -41,7 +41,7 @@ extension FileCache {
     func add(todoItem: TodoItem) throws {
         let id = todoItem.id
         
-        if items[id] != nil{
+        if items[id] != nil {
             throw FileCacheError.alreadyContains
         } else {
             items[id] = todoItem

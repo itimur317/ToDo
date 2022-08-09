@@ -1,0 +1,17 @@
+disabled_rules:
+  - trailing_whitespace
+  - function_body_length
+
+excluded:
+  - Pods
+
+identifier_name:
+  min_length: 1 # only warning
+
+file_length:
+  warning: 800
+  error: 1200
+
+type_body_length:
+  warning: 400
+  error: 800

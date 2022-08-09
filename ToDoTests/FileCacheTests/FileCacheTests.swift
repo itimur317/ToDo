@@ -38,8 +38,7 @@ class FileCacheTests: XCTestCase {
         do {
             try fileCache.add(todoItem: todoItem1)
             try fileCache.add(todoItem: todoItem2)
-        }
-        catch {
+        } catch {
             XCTFail("Add error")
         }
         
@@ -122,8 +121,7 @@ class FileCacheTests: XCTestCase {
         do {
             try fileCache.add(todoItem: todoItem1)
             try fileCache.add(todoItem: todoItem2)
-        }
-        catch {
+        } catch {
             XCTFail("Add error")
         }
         

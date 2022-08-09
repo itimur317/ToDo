@@ -30,7 +30,7 @@ extension TodoItem {
             Key.id: id,
             Key.text: text,
             Key.isDone: isDone,
-            Key.createdAt: createdAt.timeIntervalSince1970,
+            Key.createdAt: createdAt.timeIntervalSince1970
         ]
         
         if importance != .basic {

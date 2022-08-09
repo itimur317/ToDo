@@ -55,6 +55,7 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
 
     init(to action: OpenTodoItem, in dir: String) {
         self.dir = dir
+        importance = .basic
         
         switch action {
         case .createNew:
@@ -78,7 +79,6 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     func getText() -> String? {
         return text 
     }
-
     
     func setWillSaveDeadline(_ willSave: Bool) {
         willSaveDeadline = willSave
@@ -131,8 +131,7 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
         // чтобы занести это же дело с изменениями(и с другим id)
         if isEditing {
             saveWhenEditing(todoItem: todoItem)
-        }
-        else {
+        } else {
             saveWhenCreating(todoItem: todoItem)
         }
         
@@ -157,8 +156,7 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
             try fileCache.delete(id: id)
             try fileCache.clearCache(by: dir)
             try fileCache.save(to: dir)
-        }
-        catch {
+        } catch {
             todoItemVC?.failureDeleteTodoItem()
         }
         
@@ -181,9 +179,9 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     
     private func saveWhenCreating(todoItem: TodoItem) {
         guard
-            (try? fileCache.load(from: dir)) != nil,
+//            (try? fileCache.load(from: dir)) != nil,
             (try? fileCache.add(todoItem: todoItem)) != nil,
-            (try? fileCache.clearCache(by: dir)) != nil,
+//            (try? fileCache.clearCache(by: dir)) != nil,
             (try? fileCache.save(to: dir)) != nil
         else {
             todoItemVC?.failureSaveTodoItem()

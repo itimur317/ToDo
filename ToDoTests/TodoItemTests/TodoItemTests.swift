@@ -155,7 +155,7 @@ class TodoItemTests: XCTestCase {
         )
         
         // Then
-        if let _ = TodoItem.parse(json: json) {
+        if TodoItem.parse(json: json) != nil {
             return XCTFail("Parsing failed")
         }
     }
@@ -185,7 +185,7 @@ class TodoItemTests: XCTestCase {
         XCTAssert(JSONSerialization.isValidJSONObject(json), "Invalid JSON")
         
         // Then
-        if let _ = TodoItem.parse(json: json) {
+        if TodoItem.parse(json: json) != nil {
             return XCTFail("Parsing failed")
         }
     }
@@ -348,7 +348,7 @@ class TodoItemTests: XCTestCase {
         XCTAssert(JSONSerialization.isValidJSONObject(json), "Invalid JSON")
         
         // Then
-        if let _ = TodoItem.parse(json: json) {
+        if TodoItem.parse(json: json) != nil {
             return XCTFail("Parsing failed")
         }
     }
@@ -522,7 +522,7 @@ class TodoItemTests: XCTestCase {
         let json = todoItem.json
         
         // When
-        guard let _ = TodoItem.parse(json: json) else {
+        guard TodoItem.parse(json: json) != nil else {
             return XCTFail("Parsing failed")
         }
         XCTAssert(JSONSerialization.isValidJSONObject(json))
@@ -612,4 +612,3 @@ class TodoItemTests: XCTestCase {
         """
     }
 }
-

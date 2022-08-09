@@ -35,7 +35,7 @@ final class DeadlineCell: UITableViewCell {
         return label
     }()
     
-    private var deadlineSwitch: UISwitch = {
+    private lazy var deadlineSwitch: UISwitch = {
         let deadlineSwitch = UISwitch()
         deadlineSwitch.addTarget(
             self,

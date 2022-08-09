@@ -8,7 +8,7 @@
 import UIKit
 
 final class NewTodoItemCell: UITableViewCell {
-    
+
     private var newLabel: UILabel = {
         let label = UILabel()
         label.text = "Новое"
