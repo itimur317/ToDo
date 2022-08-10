@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import TodoItem
 import CocoaLumberjack
 
 protocol ListTodoItemsVCProtocol: AnyObject {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension TodoItem {
+public extension TodoItem {
     private enum Key {
         static let id = "id"
         static let text = "text"

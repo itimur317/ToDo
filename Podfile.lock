@@ -3,20 +3,27 @@ PODS:
   - CocoaLumberjack/Swift (3.7.4):
     - CocoaLumberjack/Core
   - SwiftLint (0.48.0)
+  - TodoItem (0.0.1)
 
 DEPENDENCIES:
   - CocoaLumberjack/Swift
   - SwiftLint
+  - TodoItem (from `Submodules/TodoItem/TodoItem.podspec`)
 
 SPEC REPOS:
   trunk:
     - CocoaLumberjack
     - SwiftLint
 
+EXTERNAL SOURCES:
+  TodoItem:
+    :path: Submodules/TodoItem/TodoItem.podspec
+
 SPEC CHECKSUMS:
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   SwiftLint: 284cea64b6187c5d6bd83e9a548a64104d546447
+  TodoItem: a794d7d717a63783ef1a8f3c462aefada9b0eefe
 
-PODFILE CHECKSUM: 2699cc0dcfb56a204efee2bf489ad6dd477b9e4a
+PODFILE CHECKSUM: 7c065592963d51554cb9768c1c2e456383a4bc61
 
 COCOAPODS: 1.11.3

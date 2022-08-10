@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TodoItem
 
 protocol TodoItemPresenterProtocol: AnyObject {
     func getText() -> String?

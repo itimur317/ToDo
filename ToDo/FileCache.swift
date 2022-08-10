@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TodoItem
 
 protocol FileCacheProtocol: AnyObject {
     var items: [String: TodoItem] { get }

@@ -6,6 +6,7 @@ target 'ToDo' do
   use_frameworks!
   pod 'CocoaLumberjack/Swift'
   pod 'SwiftLint'
+  pod 'TodoItem', :path => 'Submodules/TodoItem/TodoItem.podspec'
   # Pods for ToDo
 
   target 'ToDoTests' do

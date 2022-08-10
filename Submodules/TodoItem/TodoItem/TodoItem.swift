@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct TodoItem {
-    let id: String
-    let text: String
-    let importance: Importance
-    let deadlineAt: Date? // deadline
-    let isDone: Bool // done
-    let createdAt: Date // created_at
-    let changedAt: Date? // changed_at
+public struct TodoItem {
+    public let id: String
+    public let text: String
+    public let importance: Importance
+    public let deadlineAt: Date? // deadline
+    public let isDone: Bool // done
+    public let createdAt: Date // created_at
+    public let changedAt: Date? // changed_at
     
-    init(
+    public init(
         text: String,
         importance: Importance,
         isDone: Bool,

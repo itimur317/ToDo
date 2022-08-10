@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import TodoItem
 
 protocol TodoItemVCProtocol: AnyObject {
     func getDescriptionText() -> String?
