@@ -19,7 +19,7 @@
 		3927CA5F288F37C20042BEAE /* ToDoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA5E288F37C20042BEAE /* ToDoUITests.swift */; };
 		3927CA61288F37C20042BEAE /* ToDoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */; };
 		3929F17C289FFDAA00FFCE6E /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F17B289FFDAA00FFCE6E /* Date+Extension.swift */; };
-		3929F17E289FFDBD00FFCE6E /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F17D289FFDBD00FFCE6E /* UIViewController.swift */; };
+		3929F17E289FFDBD00FFCE6E /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F17D289FFDBD00FFCE6E /* UIViewController+Extension.swift */; };
 		3929F181289FFE0A00FFCE6E /* TodoItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F180289FFE0A00FFCE6E /* TodoItemVC.swift */; };
 		3929F183289FFE1C00FFCE6E /* TodoItemPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F182289FFE1C00FFCE6E /* TodoItemPresenter.swift */; };
 		3929F186289FFE3D00FFCE6E /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929F185289FFE3D00FFCE6E /* DatePickerCell.swift */; };
@@ -76,7 +76,7 @@
 		3927CA5E288F37C20042BEAE /* ToDoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITests.swift; sourceTree = "<group>"; };
 		3927CA60288F37C20042BEAE /* ToDoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		3929F17B289FFDAA00FFCE6E /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
-		3929F17D289FFDBD00FFCE6E /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		3929F17D289FFDBD00FFCE6E /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		3929F180289FFE0A00FFCE6E /* TodoItemVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemVC.swift; sourceTree = "<group>"; };
 		3929F182289FFE1C00FFCE6E /* TodoItemPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemPresenter.swift; sourceTree = "<group>"; };
 		3929F185289FFE3D00FFCE6E /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
@@ -194,7 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				3929F17B289FFDAA00FFCE6E /* Date+Extension.swift */,
-				3929F17D289FFDBD00FFCE6E /* UIViewController.swift */,
+				3929F17D289FFDBD00FFCE6E /* UIViewController+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -542,7 +542,7 @@
 				3929F192289FFF6E00FFCE6E /* NewTodoItemCell.swift in Sources */,
 				3929F18F289FFF3D00FFCE6E /* ListTodoItemsPresenter.swift in Sources */,
 				3927CA3E288F37C10042BEAE /* AppDelegate.swift in Sources */,
-				3929F17E289FFDBD00FFCE6E /* UIViewController.swift in Sources */,
+				3929F17E289FFDBD00FFCE6E /* UIViewController+Extension.swift in Sources */,
 				39B9C3F52891E05C00780414 /* FileCache.swift in Sources */,
 				3929F194289FFF8300FFCE6E /* TodoItemWithDeadlineCell.swift in Sources */,
 				3929F17C289FFDAA00FFCE6E /* Date+Extension.swift in Sources */,
