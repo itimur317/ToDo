@@ -20,8 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         
-        let viewController = ViewController()
-        window.rootViewController = UINavigationController(rootViewController: viewController)
+        let listTodoItemsPresenter = ListTodoItemsPresenter()
+        let listTodoItemsVC = ListTodoItemsVC(presenter: listTodoItemsPresenter)
+        listTodoItemsPresenter.listTodoItemsVC = listTodoItemsVC
+        window.rootViewController = UINavigationController(rootViewController: listTodoItemsVC)
         
         self.window = window
         window.makeKeyAndVisible()

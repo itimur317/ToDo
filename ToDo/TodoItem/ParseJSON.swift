@@ -50,6 +50,7 @@ extension TodoItem {
 }
 
 // MARK: - parse JSON
+
 extension TodoItem {
     private init?(from dict: [String: Any]) {
         guard

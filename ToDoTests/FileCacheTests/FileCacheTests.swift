@@ -98,7 +98,7 @@ class FileCacheTests: XCTestCase {
         let todoItem = TodoItem.fixture(importance: .low)
         
         // When
-        XCTAssertThrowsError(try fileCache.delete(todoItem: todoItem))
+        XCTAssertThrowsError(try fileCache.delete(id: todoItem.id))
         
         // Then
         XCTAssertEqual(
@@ -127,7 +127,7 @@ class FileCacheTests: XCTestCase {
             XCTFail("Add error")
         }
         
-        XCTAssertNoThrow(try fileCache.delete(todoItem: todoItem1))
+        XCTAssertNoThrow(try fileCache.delete(id: todoItem1.id))
         
         // Then
         XCTAssertNil(fileCache.items["first"])
