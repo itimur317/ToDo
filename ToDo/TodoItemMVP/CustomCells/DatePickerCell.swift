@@ -21,7 +21,7 @@ final class DatePickerCell: UITableViewCell {
     
     private var height: CGFloat = 350
 
-    private var datePicker: UIDatePicker = {
+    private lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.backgroundColor = UIColor(named: "cellsAddTodoItemBackground")
         datePicker.timeZone = .autoupdatingCurrent

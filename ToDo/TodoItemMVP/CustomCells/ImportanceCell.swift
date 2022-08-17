@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import TodoItem
 
 protocol ImportanceCellDelegate: AnyObject {
     func importanceChanged(cell: ImportanceCell, importance: Importance)
@@ -38,15 +39,15 @@ final class ImportanceCell: UITableViewCell {
         return label
     }()
     
-    private var importanceSegmentedControl: UISegmentedControl = {
+    private lazy var importanceSegmentedControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["", "нет", ""])
         segmentedControl.backgroundColor = UIColor(named: "segmentedControlBackground")
         segmentedControl.setImage(
-            UIImage(named: "low"),
+            ImageProvider.getImage(from: "low"),
             forSegmentAt: 0
         )
         segmentedControl.setImage(
-            UIImage(named: "important"),
+            ImageProvider.getImage(from: "important"),
             forSegmentAt: 2
         )
         segmentedControl.selectedSegmentIndex = 1

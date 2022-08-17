@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import TodoItem
 
 final class TodoItemWithDeadlineCell: UITableViewCell {
     
@@ -101,7 +102,7 @@ final class TodoItemWithDeadlineCell: UITableViewCell {
                 systemName: "circle",
                 withConfiguration: config
             )
-            if let deadline = todoItem.deadlineAt, deadline < Date(){
+            if let deadline = todoItem.deadlineAt, deadline < Date() {
                 doneImageView.tintColor = .red
             } else {
                 doneImageView.tintColor = .lightGray

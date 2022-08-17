@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import TodoItem
+import CocoaLumberjack
 
 protocol ListTodoItemsVCProtocol: AnyObject {
     func updateShowHideLabel()
@@ -31,6 +33,7 @@ final class ListTodoItemsVC: UIViewController,
     }
     
     required init?(coder: NSCoder) {
+        DDLogError("Здесь могла быть ваша ошибка")
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -44,7 +47,7 @@ final class ListTodoItemsVC: UIViewController,
         return label
     }()
     
-    private let showHideButton: UIButton = {
+    private lazy var showHideButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(named: "listBackground")
         button.setTitleColor(
@@ -86,7 +89,7 @@ final class ListTodoItemsVC: UIViewController,
     
     private var tableHeightConstraint: NSLayoutConstraint?
     
-    private let addTodoItemButton: UIButton = {
+    private lazy var addTodoItemButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(named: "listBackground")
         let config = UIImage.SymbolConfiguration(
@@ -246,7 +249,10 @@ extension ListTodoItemsVC {
         self.viewWillLayoutSubviews()
     }
     
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    func tableView(
+        _ tableView: UITableView,
+        leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
         
         if indexPath.row == presenter.getTodoItemsCount() {
             return nil
@@ -257,8 +263,7 @@ extension ListTodoItemsVC {
             return nil
         }
                 
-        let markAsDoneButton = UIContextualAction(style: .normal, title: "") { [weak self]
-            (action, view, completion) in
+        let markAsDoneButton = UIContextualAction(style: .normal, title: "") { [weak self] (_, _, completion) in
             self?.presenter.markAsDone(todoItem: todoItem)
             completion(true)
         }
@@ -277,7 +282,10 @@ extension ListTodoItemsVC {
         return config
     }
     
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
         
         if indexPath.row == presenter.getTodoItemsCount() {
             return nil
@@ -285,8 +293,7 @@ extension ListTodoItemsVC {
         let todoItem = presenter.getTodoItems()[indexPath.row]
                 
         // Delete button settings
-        let deleteButton = UIContextualAction(style: .destructive, title: "") { [weak self]
-            (action, view, completion) in
+        let deleteButton = UIContextualAction(style: .destructive, title: "") { [weak self] (_, _, completion) in
             self?.presenter.deleteTodoItem(by: todoItem)
             completion(true)
         }
@@ -301,8 +308,7 @@ extension ListTodoItemsVC {
         deleteButton.backgroundColor = .red
         
         // Info button settings
-        let infoButton = UIContextualAction(style: .destructive, title: "") { [weak self]
-            (action, view, completion) in
+        let infoButton = UIContextualAction(style: .destructive, title: "") { [weak self] (_, _, completion) in
             self?.presenter.editTodoItem(at: indexPath.row)
             completion(true)
         }
@@ -333,25 +339,31 @@ extension ListTodoItemsVC {
         switch indexPath.row {
             
         case presenter.getTodoItemsCount():
-            let cell = tableView.dequeueReusableCell(
+            guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: "NewTodoItemCell"
-            ) as! NewTodoItemCell
+            ) as? NewTodoItemCell else {
+                return UITableViewCell()
+            }
             cell.selectionStyle = .none
             return cell
             
         default:
             if presenter.getTodoItems()[indexPath.row].deadlineAt != nil {
-                let cell = tableView.dequeueReusableCell(
+                guard let cell = tableView.dequeueReusableCell(
                     withIdentifier: "TodoItemWithDeadlineCell"
-                ) as! TodoItemWithDeadlineCell
+                ) as? TodoItemWithDeadlineCell else {
+                    return UITableViewCell()
+                }
                 cell.configure(todoItem: presenter.getTodoItems()[indexPath.row])
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.selectionStyle = .none
                 return cell
             } else {
-                let cell = tableView.dequeueReusableCell(
+                guard let cell = tableView.dequeueReusableCell(
                     withIdentifier: "TodoItemWithoutDeadlineCell"
-                ) as! TodoItemWithoutDeadlineCell
+                ) as? TodoItemWithoutDeadlineCell else {
+                    return UITableViewCell()
+                }
                 cell.configure(todoItem: presenter.getTodoItems()[indexPath.row])
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.selectionStyle = .none
