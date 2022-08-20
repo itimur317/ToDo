@@ -124,7 +124,8 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
             importance: importance,
             isDone: isDone ?? false,
             createdAt: createdAt ?? Date(),
-            deadlineAt: deadlineAt
+            deadlineAt: deadlineAt,
+            changedAt: Date()
         )
         
         // Если это дело в кэше, то оно удалиться,

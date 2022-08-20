@@ -9,7 +9,7 @@ import TodoItem
 
 final class Service {
     
-    var itemsUpdated: (() -> Void)?
+    var itemsUpdated: (([TodoItem]) -> Void)?
     
     private let networkService = DefaultNetworkService()
     private let mockFileCacheService = MockFileCacheService()
@@ -56,7 +56,7 @@ final class Service {
                 print(error.localizedDescription)
                 self.items[todoItem.id] = todoItem
                 self.isDirty = true
-                completion(.failure(error))
+                completion(.success(todoItem))
             }
         }
     }
@@ -78,9 +78,13 @@ final class Service {
                 completion(.success(returnedItem))
             case .failure(let error):
                 print(error.localizedDescription)
-                self.items[id] = nil
                 self.isDirty = true
-                completion(.failure(error))
+                guard let item = self.items[id] else {
+                    completion(.failure(error))
+                    return
+                }
+                self.items[id] = nil
+                completion(.success(item))
             }
         }
     }
@@ -105,7 +109,7 @@ final class Service {
                 print(error.localizedDescription)
                 self.items[id] = item
                 self.isDirty = true
-                completion(.failure(error))
+                completion(.success(item))
             }
         }
     }
@@ -124,7 +128,10 @@ final class Service {
                     self.items[item.id] = item
                 }
                 self.isDirty = false
-                _ = self.itemsUpdated
+                guard self.itemsUpdated != nil else {
+                    return
+                }
+                self.itemsUpdated!(todoItems)
             case .failure(let error):
                 print(error.localizedDescription)
                 self.isDirty = true

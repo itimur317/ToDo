@@ -32,7 +32,17 @@ final class ListTodoItemsPresenter: ListTodoItemsPresenterProtocol {
     
     func viewDidLoad() {
         // для апдейта
-        service.itemsUpdated = {
+        service.itemsUpdated = { [weak self] todoItems in
+            guard let self = self else {
+                return
+            }
+            
+            self.items.keys.forEach { id in
+                self.items[id] = nil
+            }
+            todoItems.forEach { item in
+                self.items[item.id] = item
+            }
             self.listTodoItemsVC?.updateTableView()
         }
         
