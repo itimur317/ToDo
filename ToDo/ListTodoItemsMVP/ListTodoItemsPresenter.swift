@@ -34,99 +34,9 @@ final class ListTodoItemsPresenter: ListTodoItemsPresenterProtocol {
     private let networkService = DefaultNetworkService()
     
     func viewDidLoad() {
-        let item = TodoItem(
-            text: "otpuskayu i v nebo",
-            importance: .low,
-            isDone: false,
-            createdAt: Date(),
-            id: "izi3000",
-            deadlineAt: Date(),
-            changedAt: Date()
-        )
-        
-//        networkService.addTodoItem(item) { result in
-//            switch result {
-//            case .success(let item):
-//                print("DOBAVIL \(item)")
-//            case .failure(let error):
-//                print("OSHIBOcHKA \(error)")
-//            }
-//        }
-        
-//        networkService.getTodoItem(by: "hqd") { result in
-//            switch result {
-//            case .success(let todoItem):
-//                print("ZAGRUZIL ODIN \(todoItem)")
-//            case .failure(let error):
-//                print("OSHIBOcHKA \(error)")
-//            }
-//        }
-        
-//        networkService.deleteTodoItem(at: "izi3") { result in
-//            switch result {
-//            case .success(let todoItem):
-//                print("UDALIL \(todoItem)")
-//            case .failure(let error):
-//                print("OSHIBOcHKA \(error)")
-//            }
-//        }
-//
-//        networkService.editTodoItem(at: "izi3", to: item) { result in
-//            switch result {
-//            case .success(let todoItem):
-//                print("ZAMENIL \(todoItem)")
-//            case .failure(let error):
-//                print("OSHIBOcHKA \(error)")
-//            }
-//        }
-        
-        networkService.getAllTodoItems { result in
-            switch result {
-            case .success(let todoItems):
-                print("ZAGRUZIL \(todoItems)")
-
-            case .failure(let error):
-                print("OSHIBOcHKA \(error)")
-            }
-        }
-        
-        let item1 = TodoItem(
-            text: "koncert maxim",
-            importance: .basic,
-            isDone: true,
-            createdAt: Date(),
-            id: "chapman3",
-            deadlineAt: Date(),
-            changedAt: Date()
-        )
-        
-        let item2 = TodoItem(
-            text: "koncert maxim",
-            importance: .basic,
-            isDone: true,
-            createdAt: Date(),
-            id: "chapman4",
-            deadlineAt: Date(),
-            changedAt: Date()
-        )
-        
-        self.networkService.updateAllTodoItems([item1, item2]) { result in
-            switch result {
-            case .success(let todoItems):
-                print("ZAPATCHIL \(todoItems)")
-            case .failure(let error):
-                print("OSHIBOcHKA \(error)")
-            }
-        }
-        
         do {
             try fileCache.load(from: dir)
         } catch {
-            // Протестировал, тут всё ок
-            // просто вернется пустая коллекция
-            
-            // Как правильно обрабатывать функции с ошибками,
-            // если даже при выбрасывании ошибки всё ок отрабатывает?
             print(fileCache.items)
         }
         listTodoItemsVC?.updateTableView()
@@ -195,14 +105,7 @@ extension ListTodoItemsPresenter {
     }
     
     func markAsDone(todoItem: TodoItem) {
-        let markedAsDoneTodoItem = TodoItem(
-            text: todoItem.text,
-            importance: todoItem.importance,
-            isDone: true,
-            createdAt: todoItem.createdAt,
-            deadlineAt: todoItem.deadlineAt,
-            changedAt: todoItem.changedAt
-        )
+        let markedAsDoneTodoItem = todoItem.asCompleted()
         
         do {
             try fileCache.delete(id: todoItem.id)
