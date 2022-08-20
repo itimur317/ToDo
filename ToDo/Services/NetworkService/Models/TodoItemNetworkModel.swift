@@ -46,14 +46,26 @@ struct TodoItemNetworkModel: Codable {
     }
     
     var todoItem: TodoItem {
+        guard let deadlineAt = deadlineAt else {
+            return TodoItem(
+                text: text,
+                importance: Importance(rawValue: importance) ?? .basic,
+                isDone: isDone,
+                createdAt: Date(timeIntervalSince1970: TimeInterval(createdAt)),
+                id: id,
+                deadlineAt: nil,
+                changedAt: Date(timeIntervalSince1970: TimeInterval(changedAt))
+            )
+        }
+        
         return TodoItem(
             text: text,
             importance: Importance(rawValue: importance) ?? .basic,
             isDone: isDone,
             createdAt: Date(timeIntervalSince1970: TimeInterval(createdAt)),
             id: id,
-            deadlineAt: Date(timeIntervalSince1970: TimeInterval(createdAt)),
-            changedAt: Date(timeIntervalSince1970: TimeInterval(createdAt))
+            deadlineAt: Date(timeIntervalSince1970: TimeInterval(deadlineAt)),
+            changedAt: Date(timeIntervalSince1970: TimeInterval(changedAt))
         )
     }
 }

@@ -16,8 +16,8 @@ protocol ListTodoItemsVCProtocol: AnyObject {
     func setDoneLabel(amount: Int)
     func alertWith(text: String)
     
-    func presentToEdit(todoItem: TodoItem, in: String)
-    func presentToCreate(in dir: String)
+    func presentToEdit(todoItem: TodoItem, using: StorageService)
+    func presentToCreate(using: StorageService)
 }
 
 final class ListTodoItemsVC: UIViewController,
@@ -262,7 +262,7 @@ extension ListTodoItemsVC {
         if todoItem.isDone {
             return nil
         }
-                
+        
         let markAsDoneButton = UIContextualAction(style: .normal, title: "") { [weak self] (_, _, completion) in
             self?.presenter.markAsDone(todoItem: todoItem)
             completion(true)
@@ -291,7 +291,7 @@ extension ListTodoItemsVC {
             return nil
         }
         let todoItem = presenter.getTodoItems()[indexPath.row]
-                
+        
         // Delete button settings
         let deleteButton = UIContextualAction(style: .destructive, title: "") { [weak self] (_, _, completion) in
             self?.presenter.deleteTodoItem(by: todoItem)
@@ -412,8 +412,8 @@ extension ListTodoItemsVC {
         )
     }
     
-    func presentToEdit(todoItem: TodoItem, in dir: String) {
-        let todoItemPresenter = TodoItemPresenter(to: .edit(todoItem: todoItem), in: dir)
+    func presentToEdit(todoItem: TodoItem, using storage: StorageService) {
+        let todoItemPresenter = TodoItemPresenter(to: .edit(todoItem: todoItem), using: storage)
         let todoItemVC = TodoItemVC(presenter: todoItemPresenter)
         todoItemPresenter.todoItemVC = todoItemVC
         
@@ -424,8 +424,8 @@ extension ListTodoItemsVC {
         self.present(nav, animated: true, completion: nil)
     }
     
-    func presentToCreate(in dir: String) {
-        let todoItemPresenter = TodoItemPresenter(to: .createNew, in: dir)
+    func presentToCreate(using storage: StorageService) {
+        let todoItemPresenter = TodoItemPresenter(to: .createNew, using: storage)
         let todoItemVC = TodoItemVC(presenter: todoItemPresenter)
         todoItemPresenter.todoItemVC = todoItemVC
         

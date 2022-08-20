@@ -14,11 +14,11 @@ final class StorageService {
     private let networkService = DefaultNetworkService()
     private let mockFileCacheService = MockFileCacheService()
     
-    private(set) var items: [String: TodoItem] = [:]
+    private var items: [String: TodoItem] = [:]
     
     private var isDirty: Bool = false
-
-    func getAllTodoItems() {
+    
+    func getAllTodoItems(completion: @escaping (Result<[TodoItem], Error>) -> Void) {
         networkService.getAllTodoItems { [weak self] result in
             guard let self = self else { return }
             
@@ -27,15 +27,20 @@ final class StorageService {
                 todoItems.forEach { item in
                     self.items[item.id] = item
                 }
+                completion(.success(todoItems))
             case .failure(let error):
                 print(error.localizedDescription)
                 self.items = [:]
                 self.isDirty = true
+                completion(.failure(error))
             }
         }
     }
     
-    func addTodoItem(_ todoItem: TodoItem) {
+    func addTodoItem(
+        _ todoItem: TodoItem,
+        completion: @escaping (Result<TodoItem, Error>) -> Void
+    ) {
         if isDirty {
             updateAllTodoItems()
         }
@@ -46,15 +51,20 @@ final class StorageService {
             switch result {
             case .success(let returnedItem):
                 self.items[returnedItem.id] = returnedItem
+                completion(.success(returnedItem))
             case .failure(let error):
                 print(error.localizedDescription)
                 self.items[todoItem.id] = todoItem
                 self.isDirty = true
+                completion(.failure(error))
             }
         }
     }
     
-    func deleteTodoItem(at id: String) {
+    func deleteTodoItem(
+        at id: String,
+        completion: @escaping (Result<TodoItem, Error>) -> Void
+    ) {
         if isDirty {
             updateAllTodoItems()
         }
@@ -65,29 +75,37 @@ final class StorageService {
             switch result {
             case .success(let returnedItem):
                 self.items[returnedItem.id] = nil
+                completion(.success(returnedItem))
             case .failure(let error):
                 print(error.localizedDescription)
                 self.items[id] = nil
                 self.isDirty = true
+                completion(.failure(error))
             }
         }
     }
     
-    func editTodoItem(at id: String, to item: TodoItem) {
+    func editTodoItem(
+        at id: String,
+        to item: TodoItem,
+        completion: @escaping (Result<TodoItem, Error>) -> Void
+    ) {
         if isDirty {
             updateAllTodoItems()
         }
         
         networkService.editTodoItem(at: id, to: item) { [weak self] result in
             guard let self = self else { return }
-            // не надо менять
+            
             switch result {
             case .success(let returnedItem):
                 self.items[id] = returnedItem
+                completion(.success(returnedItem))
             case .failure(let error):
                 print(error.localizedDescription)
                 self.items[id] = item
                 self.isDirty = true
+                completion(.failure(error))
             }
         }
     }

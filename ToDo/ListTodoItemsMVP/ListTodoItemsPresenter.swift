@@ -12,10 +12,10 @@ protocol ListTodoItemsPresenterProtocol: AnyObject {
     func viewDidLoad()
     
     func showHideDoneTodoItems()
-
+    
     func getTodoItems() -> [TodoItem]
     func getTodoItemsCount() -> Int
-        
+    
     func deleteTodoItem(by: TodoItem)
     func markAsDone(todoItem: TodoItem)
     
@@ -27,23 +27,39 @@ final class ListTodoItemsPresenter: ListTodoItemsPresenterProtocol {
     
     weak var listTodoItemsVC: ListTodoItemsVCProtocol?
     
-    private let fileCache = FileCache()
-    
-    private let dir: String = "Main"
-    
-    private let networkService = DefaultNetworkService()
+    private let storageService = StorageService()
+    private var items: [String: TodoItem] = [:]
     
     func viewDidLoad() {
-        do {
-            try fileCache.load(from: dir)
-        } catch {
-            print(fileCache.items)
+        // для апдейта
+        storageService.itemsUpdated = {
+            self.listTodoItemsVC?.updateTableView()
         }
-        listTodoItemsVC?.updateTableView()
+        
+        if !items.isEmpty {
+            items.keys.forEach { key in
+                items[key] = nil
+            }
+        }
+        
+        storageService.getAllTodoItems { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(let todoItems):
+                todoItems.forEach { todoItem in
+                    self.items[todoItem.id] = todoItem
+                }
+                self.listTodoItemsVC?.updateTableView()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     private var allTodoItems: [TodoItem] {
-        fileCache.items.values.sorted { todoItem1, todoItem2 in
+        items.values.sorted { todoItem1, todoItem2 in
             todoItem1.createdAt < todoItem2.createdAt
         }
     }
@@ -87,52 +103,44 @@ extension ListTodoItemsPresenter {
     func deleteTodoItem(by todoItem: TodoItem) {
         let id = todoItem.id
         
-        do {
-            try fileCache.delete(id: id)
-            listTodoItemsVC?.updateTableView()
-            DispatchQueue.global().async { [weak self] in
-                guard
-                    let dir = self?.dir,
-                    (try? self?.fileCache.clearCache(by: dir)) != nil,
-                    (try? self?.fileCache.save(to: dir)) != nil
-                else {
-                    return
-                }
+        storageService.deleteTodoItem(at: id) { [weak self] result in
+            guard let self = self else {
+                return
             }
-        } catch {
-            listTodoItemsVC?.alertWith(text: "Удалить не получилось!")
+            switch result {
+            case .success(let returnedItem):
+                self.items[returnedItem.id] = nil
+                self.listTodoItemsVC?.updateTableView()
+            case .failure(_):
+                self.listTodoItemsVC?.alertWith(text: "Удалить не получилось!")
+            }
         }
     }
     
     func markAsDone(todoItem: TodoItem) {
         let markedAsDoneTodoItem = todoItem.asCompleted()
-        
-        do {
-            try fileCache.delete(id: todoItem.id)
-            try fileCache.add(todoItem: markedAsDoneTodoItem)
-            
-            DispatchQueue.global().async { [weak self] in
-                guard
-                    let dir = self?.dir,
-                    (try? self?.fileCache.clearCache(by: dir)) != nil,
-                    (try? self?.fileCache.save(to: dir)) != nil
-                else {
+        storageService.editTodoItem(
+            at: todoItem.id,
+            to: markedAsDoneTodoItem) { [weak self] result in
+                guard let self = self else {
                     return
                 }
+                switch result {
+                case .success(let returnedItem):
+                    self.items[todoItem.id] = returnedItem
+                    self.listTodoItemsVC?.updateTableView()
+                case .failure(_):
+                    self.listTodoItemsVC?.alertWith(text: "Не получилось отметить выполненным!")
+                }
             }
-        } catch {
-            return
-        }
-        
-        listTodoItemsVC?.updateTableView()
     }
     
     func createTodoItem() {
-        listTodoItemsVC?.presentToCreate(in: dir)
+        listTodoItemsVC?.presentToCreate(using: storageService)
     }
     
     func editTodoItem(at index: Int) {
         let todoItem = getTodoItems()[index]
-        listTodoItemsVC?.presentToEdit(todoItem: todoItem, in: dir)
+        listTodoItemsVC?.presentToEdit(todoItem: todoItem, using: storageService)
     }
 }

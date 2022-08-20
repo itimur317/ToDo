@@ -49,13 +49,12 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     private var createdAt: Date?
     private var id: String?
     
-    private let fileCache = FileCache()
+    private let storageService: StorageService
     
     private let isEditing: Bool
-    private let dir: String
-
-    init(to action: OpenTodoItem, in dir: String) {
-        self.dir = dir
+    
+    init(to action: OpenTodoItem, using storage: StorageService) {
+        self.storageService = storage
         importance = .basic
         
         switch action {
@@ -78,7 +77,7 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     }
     
     func getText() -> String? {
-        return text 
+        return text
     }
     
     func setWillSaveDeadline(_ willSave: Bool) {
@@ -135,10 +134,8 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
         } else {
             saveWhenCreating(todoItem: todoItem)
         }
-        
-        todoItemVC?.successSaveTodoItem()
     }
-
+    
     func deleteTodoItem() {
         if isEditing {
             deleteWhenEditing()
@@ -152,41 +149,60 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
             todoItemVC?.failureDeleteTodoItem()
             return
         }
-        do {
-            try fileCache.load(from: dir)
-            try fileCache.delete(id: id)
-            try fileCache.clearCache(by: dir)
-            try fileCache.save(to: dir)
-        } catch {
-            todoItemVC?.failureDeleteTodoItem()
-        }
         
-        todoItemVC?.successDeleteTodoItem()
+        storageService.deleteTodoItem(at: id) { [weak self] result in
+            guard let self = self else {
+                self?.todoItemVC?.failureDeleteTodoItem()
+                return
+            }
+            
+            switch result {
+            case .success(_):
+                self.todoItemVC?.successDeleteTodoItem()
+            case .failure(_):
+                self.todoItemVC?.failureDeleteTodoItem()
+            }
+        }
     }
     
     private func saveWhenEditing(todoItem: TodoItem) {
-        guard
-            let id = id,
-            (try? fileCache.load(from: dir)) != nil,
-            (try? fileCache.add(todoItem: todoItem)) != nil,
-            (try? fileCache.delete(id: id)) != nil,
-            (try? fileCache.clearCache(by: dir)) != nil,
-            (try? fileCache.save(to: dir)) != nil
-        else {
+        guard let id = id else {
             todoItemVC?.failureSaveTodoItem()
             return
+        }
+        
+        storageService.editTodoItem(
+            at: id,
+            to: todoItem
+        ) { [weak self] result in
+            guard let self = self else {
+                self?.todoItemVC?.failureSaveTodoItem()
+                return
+            }
+            
+            switch result {
+            case .success(_):
+                self.todoItemVC?.successSaveTodoItem()
+            case .failure(_):
+                self.todoItemVC?.failureSaveTodoItem()
+            }
         }
     }
     
     private func saveWhenCreating(todoItem: TodoItem) {
-        guard
-//            (try? fileCache.load(from: dir)) != nil,
-            (try? fileCache.add(todoItem: todoItem)) != nil,
-//            (try? fileCache.clearCache(by: dir)) != nil,
-            (try? fileCache.save(to: dir)) != nil
-        else {
-            todoItemVC?.failureSaveTodoItem()
-            return
+        
+        storageService.addTodoItem(todoItem) { [weak self] result in
+            guard let self = self else {
+                self?.todoItemVC?.failureSaveTodoItem()
+                return
+            }
+            
+            switch result {
+            case .success(_):
+                self.todoItemVC?.successSaveTodoItem()
+            case .failure(_):
+                self.todoItemVC?.failureSaveTodoItem()
+            }
         }
     }
 }
