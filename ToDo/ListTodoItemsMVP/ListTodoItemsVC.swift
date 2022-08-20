@@ -16,8 +16,8 @@ protocol ListTodoItemsVCProtocol: AnyObject {
     func setDoneLabel(amount: Int)
     func alertWith(text: String)
     
-    func presentToEdit(todoItem: TodoItem, using: StorageService)
-    func presentToCreate(using: StorageService)
+    func presentToEdit(todoItem: TodoItem, using: Service)
+    func presentToCreate(using: Service)
 }
 
 final class ListTodoItemsVC: UIViewController,
@@ -412,7 +412,7 @@ extension ListTodoItemsVC {
         )
     }
     
-    func presentToEdit(todoItem: TodoItem, using storage: StorageService) {
+    func presentToEdit(todoItem: TodoItem, using storage: Service) {
         let todoItemPresenter = TodoItemPresenter(to: .edit(todoItem: todoItem), using: storage)
         let todoItemVC = TodoItemVC(presenter: todoItemPresenter)
         todoItemPresenter.todoItemVC = todoItemVC
@@ -424,7 +424,7 @@ extension ListTodoItemsVC {
         self.present(nav, animated: true, completion: nil)
     }
     
-    func presentToCreate(using storage: StorageService) {
+    func presentToCreate(using storage: Service) {
         let todoItemPresenter = TodoItemPresenter(to: .createNew, using: storage)
         let todoItemVC = TodoItemVC(presenter: todoItemPresenter)
         todoItemPresenter.todoItemVC = todoItemVC

@@ -1,5 +1,5 @@
 //
-//  StorageService.swift
+//  Service.swift
 //  ToDo
 //
 //  Created by Timur on 20.08.2022.
@@ -7,7 +7,7 @@
 
 import TodoItem
 
-final class StorageService {
+final class Service {
     
     var itemsUpdated: (() -> Void)?
     

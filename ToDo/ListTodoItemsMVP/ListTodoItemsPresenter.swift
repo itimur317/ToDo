@@ -27,12 +27,12 @@ final class ListTodoItemsPresenter: ListTodoItemsPresenterProtocol {
     
     weak var listTodoItemsVC: ListTodoItemsVCProtocol?
     
-    private let storageService = StorageService()
+    private let service = Service()
     private var items: [String: TodoItem] = [:]
     
     func viewDidLoad() {
         // для апдейта
-        storageService.itemsUpdated = {
+        service.itemsUpdated = {
             self.listTodoItemsVC?.updateTableView()
         }
         
@@ -42,7 +42,7 @@ final class ListTodoItemsPresenter: ListTodoItemsPresenterProtocol {
             }
         }
         
-        storageService.getAllTodoItems { [weak self] result in
+        service.getAllTodoItems { [weak self] result in
             guard let self = self else {
                 return
             }
@@ -103,7 +103,7 @@ extension ListTodoItemsPresenter {
     func deleteTodoItem(by todoItem: TodoItem) {
         let id = todoItem.id
         
-        storageService.deleteTodoItem(at: id) { [weak self] result in
+        service.deleteTodoItem(at: id) { [weak self] result in
             guard let self = self else {
                 return
             }
@@ -119,7 +119,7 @@ extension ListTodoItemsPresenter {
     
     func markAsDone(todoItem: TodoItem) {
         let markedAsDoneTodoItem = todoItem.asCompleted()
-        storageService.editTodoItem(
+        service.editTodoItem(
             at: todoItem.id,
             to: markedAsDoneTodoItem) { [weak self] result in
                 guard let self = self else {
@@ -136,11 +136,11 @@ extension ListTodoItemsPresenter {
     }
     
     func createTodoItem() {
-        listTodoItemsVC?.presentToCreate(using: storageService)
+        listTodoItemsVC?.presentToCreate(using: service)
     }
     
     func editTodoItem(at index: Int) {
         let todoItem = getTodoItems()[index]
-        listTodoItemsVC?.presentToEdit(todoItem: todoItem, using: storageService)
+        listTodoItemsVC?.presentToEdit(todoItem: todoItem, using: service)
     }
 }

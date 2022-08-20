@@ -49,12 +49,12 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     private var createdAt: Date?
     private var id: String?
     
-    private let storageService: StorageService
+    private let service: Service
     
     private let isEditing: Bool
     
-    init(to action: OpenTodoItem, using storage: StorageService) {
-        self.storageService = storage
+    init(to action: OpenTodoItem, using storage: Service) {
+        self.service = storage
         importance = .basic
         
         switch action {
@@ -150,7 +150,7 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
             return
         }
         
-        storageService.deleteTodoItem(at: id) { [weak self] result in
+        service.deleteTodoItem(at: id) { [weak self] result in
             guard let self = self else {
                 self?.todoItemVC?.failureDeleteTodoItem()
                 return
@@ -171,7 +171,7 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
             return
         }
         
-        storageService.editTodoItem(
+        service.editTodoItem(
             at: id,
             to: todoItem
         ) { [weak self] result in
@@ -191,7 +191,7 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     
     private func saveWhenCreating(todoItem: TodoItem) {
         
-        storageService.addTodoItem(todoItem) { [weak self] result in
+        service.addTodoItem(todoItem) { [weak self] result in
             guard let self = self else {
                 self?.todoItemVC?.failureSaveTodoItem()
                 return

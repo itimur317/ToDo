@@ -56,7 +56,6 @@ final class DefaultNetworkService: NetworkService {
     private let jsonEncoder = JSONEncoder()
     private let jsonDecoder = JSONDecoder()
     
-    // TODO: - Закейнчейнить
     private let token: String = "GuidebookOfDeadlyMemorials"
     
     private let isolationQueue = DispatchQueue(
