@@ -53,6 +53,8 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
     
     private let isEditing: Bool
     
+    var listDelegate: ListDelegateProtocol?
+    
     init(to action: OpenTodoItem, using storage: Service) {
         self.service = storage
         importance = .basic
@@ -151,19 +153,8 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
             return
         }
         
-        service.deleteTodoItem(at: id) { [weak self] result in
-            guard let self = self else {
-                self?.todoItemVC?.failureDeleteTodoItem()
-                return
-            }
-            
-            switch result {
-            case .success(_):
-                self.todoItemVC?.successDeleteTodoItem()
-            case .failure(_):
-                self.todoItemVC?.failureDeleteTodoItem()
-            }
-        }
+        listDelegate?.deleteTodoItem(by: id)
+        self.todoItemVC?.successDeleteTodoItem()
     }
     
     private func saveWhenEditing(todoItem: TodoItem) {
@@ -172,38 +163,12 @@ final class TodoItemPresenter: TodoItemPresenterProtocol {
             return
         }
         
-        service.editTodoItem(
-            at: id,
-            to: todoItem
-        ) { [weak self] result in
-            guard let self = self else {
-                self?.todoItemVC?.failureSaveTodoItem()
-                return
-            }
-            
-            switch result {
-            case .success(_):
-                self.todoItemVC?.successSaveTodoItem()
-            case .failure(_):
-                self.todoItemVC?.failureSaveTodoItem()
-            }
-        }
+        listDelegate?.editTodoItem(at: id, to: todoItem)
+        self.todoItemVC?.successSaveTodoItem()
     }
     
     private func saveWhenCreating(todoItem: TodoItem) {
-        
-        service.addTodoItem(todoItem) { [weak self] result in
-            guard let self = self else {
-                self?.todoItemVC?.failureSaveTodoItem()
-                return
-            }
-            
-            switch result {
-            case .success(_):
-                self.todoItemVC?.successSaveTodoItem()
-            case .failure(_):
-                self.todoItemVC?.failureSaveTodoItem()
-            }
-        }
+        listDelegate?.addTodoItem(todoItem: todoItem)
+        self.todoItemVC?.successSaveTodoItem()
     }
 }

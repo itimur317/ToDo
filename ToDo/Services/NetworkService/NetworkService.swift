@@ -52,7 +52,10 @@ final class DefaultNetworkService: NetworkService {
     private var revision: Int = 0
     private let baseURL: String = "https://beta.mrdekk.ru/todobackend"
     
-    private let urlSession = URLSession.shared
+    let timeout: Double = 3.0
+    
+    private let urlSession: URLSession
+    
     private let jsonEncoder = JSONEncoder()
     private let jsonDecoder = JSONDecoder()
     
@@ -62,6 +65,12 @@ final class DefaultNetworkService: NetworkService {
         label: "NetworkServiceQueue",
         attributes: .concurrent
     )
+    
+    init() {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = timeout
+        urlSession = URLSession(configuration: config)
+    }
     
     func getAllTodoItems(completion: @escaping (Result<[TodoItem], Error>) -> Void) {
         isolationQueue.async(flags: .barrier) { [weak self] in
@@ -308,7 +317,7 @@ final class DefaultNetworkService: NetworkService {
                     }
                     return
                 }
-
+                
                 if let newRevision = elementNetworkModel.revision {
                     self.revision = newRevision
                 }

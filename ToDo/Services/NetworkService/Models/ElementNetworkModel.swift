@@ -9,13 +9,13 @@ struct ElementNetworkModel: Codable {
     let status: String?
     let element: TodoItemNetworkModel
     let revision: Int?
-
+    
     enum CodingKeys: String, CodingKey {
         case status
         case element
         case revision
     }
-
+    
     init(
         element: TodoItemNetworkModel,
         status: String? = nil,

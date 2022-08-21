@@ -10,6 +10,8 @@ import TodoItem
 final class Service {
     
     var itemsUpdated: (([TodoItem]) -> Void)?
+    var requestStarted: (() -> Void)?
+    var requestStopped: (() -> Void)?
     
     private let networkService = DefaultNetworkService()
     private let mockFileCacheService = MockFileCacheService()
@@ -41,22 +43,30 @@ final class Service {
         _ todoItem: TodoItem,
         completion: @escaping (Result<TodoItem, Error>) -> Void
     ) {
-        if isDirty {
-            updateAllTodoItems()
+        if requestStarted != nil {
+            completion(.success(todoItem))
+            requestStarted!()
         }
         
-        networkService.addTodoItem(todoItem) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let returnedItem):
-                self.items[returnedItem.id] = returnedItem
-                completion(.success(returnedItem))
-            case .failure(let error):
-                print(error.localizedDescription)
-                self.items[todoItem.id] = todoItem
-                self.isDirty = true
-                completion(.success(todoItem))
+        if self.isDirty {
+            self.items[todoItem.id] = todoItem
+            self.updateIfNeeded()
+        } else {
+            networkService.addTodoItem(todoItem) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let returnedItem):
+                    guard self.requestStopped != nil else {
+                        return
+                    }
+                    self.requestStopped!()
+                    
+                    self.items[returnedItem.id] = returnedItem
+                case .failure(_):
+                    self.isDirty = true
+                    self.items[todoItem.id] = todoItem
+                }
             }
         }
     }
@@ -65,26 +75,35 @@ final class Service {
         at id: String,
         completion: @escaping (Result<TodoItem, Error>) -> Void
     ) {
-        if isDirty {
-            updateAllTodoItems()
+        
+        if let item = self.items[id],
+           requestStarted != nil {
+            completion(.success(item))
+            requestStarted!()
         }
         
-        networkService.deleteTodoItem(at: id) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let returnedItem):
-                self.items[returnedItem.id] = nil
-                completion(.success(returnedItem))
-            case .failure(let error):
-                print(error.localizedDescription)
-                self.isDirty = true
-                guard let item = self.items[id] else {
-                    completion(.failure(error))
-                    return
+        if self.isDirty {
+            self.items[id] = nil
+            self.updateIfNeeded()
+        } else {
+            networkService.deleteTodoItem(at: id) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let returnedItem):
+                    guard self.requestStopped != nil else {
+                        return
+                    }
+                    self.requestStopped!()
+                    // Удаление в сервисе
+                    self.items[returnedItem.id] = nil
+                case .failure(_):
+                    guard self.items[id] != nil else {
+                        return
+                    }
+                    self.isDirty = true
+                    self.items[id] = nil
                 }
-                self.items[id] = nil
-                completion(.success(item))
             }
         }
     }
@@ -94,30 +113,44 @@ final class Service {
         to item: TodoItem,
         completion: @escaping (Result<TodoItem, Error>) -> Void
     ) {
-        if isDirty {
-            updateAllTodoItems()
+        
+        if requestStarted != nil {
+            completion(.success(item))
+            requestStarted!()
         }
         
-        networkService.editTodoItem(at: id, to: item) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let returnedItem):
-                self.items[id] = returnedItem
-                completion(.success(returnedItem))
-            case .failure(let error):
-                print(error.localizedDescription)
-                self.items[id] = item
-                self.isDirty = true
-                completion(.success(item))
+        if self.isDirty {
+            self.items[id] = item
+            self.updateIfNeeded()
+        } else {
+            networkService.editTodoItem(at: id, to: item) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let returnedItem):
+                    guard self.requestStopped != nil else {
+                        return
+                    }
+                    self.requestStopped!()
+                    self.items[id] = returnedItem
+                case .failure(_):
+                    guard self.items[id] != nil else {
+                        return
+                    }
+                    self.isDirty = true
+                    self.items[id] = item
+                }
             }
         }
     }
     
-    func updateAllTodoItems() {
+    private func updateAllTodoItems() {
         networkService.updateAllTodoItems(
             items.values.map { $0 as TodoItem }
-        ) { result in
+        ) { [weak self] result in
+            guard let self = self else {
+                return
+            }
             switch result {
             case .success(let todoItems):
                 self.items.keys.forEach { key in
@@ -128,14 +161,24 @@ final class Service {
                     self.items[item.id] = item
                 }
                 self.isDirty = false
-                guard self.itemsUpdated != nil else {
-                    return
-                }
+                
+                guard
+                    self.itemsUpdated != nil,
+                    self.requestStopped != nil else {
+                        return
+                    }
+                
                 self.itemsUpdated!(todoItems)
-            case .failure(let error):
-                print(error.localizedDescription)
+                self.requestStopped!()
+            case .failure(_):
                 self.isDirty = true
             }
+        }
+    }
+    
+    private func updateIfNeeded() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + networkService.timeout + 0.5) {
+            self.updateAllTodoItems()
         }
     }
 }

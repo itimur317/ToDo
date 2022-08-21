@@ -16,7 +16,7 @@ public extension TodoItem {
             createdAt: createdAt,
             id: id,
             deadlineAt: deadlineAt,
-            changedAt: changedAt
+            changedAt: Date()
         )
     }
     
