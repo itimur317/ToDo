@@ -14,7 +14,7 @@ final class Service {
     var requestStopped: (() -> Void)?
     
     private let networkService = DefaultNetworkService()
-    private let mockFileCacheService = MockFileCacheService()
+    private let mockFileCacheService = DefaultFileCacheService()
     
     private var items: [String: TodoItem] = [:]
     

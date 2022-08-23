@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="TodoItemEntity" representedClassName="TodoItemEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="changed_at" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="created_at" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deadline" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="done" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="importance" attributeType="String"/>
+        <attribute name="text" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="TodoItemEntity" positionX="-63" positionY="-18" width="128" height="134"/>
+    </elements>
+</model>
