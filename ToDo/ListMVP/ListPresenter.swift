@@ -17,7 +17,7 @@ final class ListPresenter: ListPresenterProtocol {
     
     private var allTodoItems: [TodoItem] {
         items.values.sorted { todoItem1, todoItem2 in
-            todoItem1.createdAt < todoItem2.createdAt
+            todoItem1.createdAt > todoItem2.createdAt
         }
     }
     
@@ -116,7 +116,7 @@ extension ListPresenter {
             case .success(let returnedItem):
                 self.items[returnedItem.id] = nil
                 self.listVC?.updateTableView()
-            case .failure(_):
+            case .failure:
                 print("not deleted")
             }
         }
@@ -154,7 +154,7 @@ extension ListPresenter {
             case .success(let returnedItem):
                 self.items[id] = returnedItem
                 self.listVC?.updateTableView()
-            case .failure(_):
+            case .failure:
                 print("not edited")
             }
         }
@@ -169,7 +169,7 @@ extension ListPresenter {
             case .success(let returnedItem):
                 self.items[todoItem.id] = returnedItem
                 self.listVC?.updateTableView()
-            case .failure(_):
+            case .failure:
                 print("not added")
             }
         }

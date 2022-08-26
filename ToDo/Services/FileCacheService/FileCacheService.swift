@@ -5,7 +5,6 @@
 //  Created by Timur on 12.08.2022.
 //
 
-import Foundation
 import TodoItem
 import CoreData
 
@@ -42,7 +41,10 @@ final class DefaultFileCacheService: FileCacheService {
         static let changedAt = "changed_at"
     }
     
-    private var items: [String: TodoItem] = [:]
+    private let isolationQueue = DispatchQueue(
+        label: "FileCacheServiceQueue",
+        attributes: .concurrent
+    )
     
     func insert(
         _ todoItem: TodoItem,
@@ -51,28 +53,33 @@ final class DefaultFileCacheService: FileCacheService {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        guard let entity =  NSEntityDescription.entity(
-            forEntityName: "TodoItemEntity",
-            in: managedContext
-        ) else {
-            return 
+        isolationQueue.async(flags: .barrier) {
+            let managedContext = appDelegate.persistentContainer.viewContext
+            
+            guard let entity =  NSEntityDescription.entity(
+                forEntityName: "TodoItemEntity",
+                in: managedContext
+            ) else {
+                return
+            }
+            
+            let item = NSManagedObject(
+                entity: entity,
+                insertInto: managedContext
+            )
+            todoItem.setValues(to: item)
+            
+            do {
+                try managedContext.save()
+                DispatchQueue.main.async {
+                    completion(.success((todoItem)))
+                }
+            } catch let error as NSError {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
         }
-        
-        let item = NSManagedObject(
-            entity: entity,
-            insertInto: managedContext
-        )
-        todoItem.setValues(to: item)
-        
-        do {
-            try managedContext.save()
-            completion(.success((todoItem)))
-        } catch let error as NSError {
-            completion(.failure(error))
-        }
-        
     }
     
     func delete(
@@ -82,30 +89,38 @@ final class DefaultFileCacheService: FileCacheService {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        let predicate = NSPredicate(format: "\(Key.id) == %@", id)
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "TodoItemEntity")
-        
-        fetchRequest.predicate = predicate
-        
-        do {
-            let objects = try managedContext.fetch(fetchRequest)
-            if objects.count > 0 {
-                let objectToDelete = objects[0]
-                managedContext.delete(objectToDelete)
-                let todoItem = try TodoItem(from: objectToDelete)
-                
-                try managedContext.save()
-                completion(.success(todoItem))
-            } else {
-                completion(.failure(TodoItem.TodoItemError.failureParseNSManagedObject))
+        isolationQueue.async(flags: .barrier) {
+            let managedContext = appDelegate.persistentContainer.viewContext
+            
+            let predicate = NSPredicate(format: "\(Key.id) == %@", id)
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "TodoItemEntity")
+            
+            fetchRequest.predicate = predicate
+            
+            do {
+                let objects = try managedContext.fetch(fetchRequest)
+                if objects.count > 0 {
+                    let objectToDelete = objects[0]
+                    managedContext.delete(objectToDelete)
+                    let todoItem = try TodoItem(from: objectToDelete)
+                    
+                    try managedContext.save()
+                    DispatchQueue.main.async {
+                        completion(.success(todoItem))
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        completion(.failure(TodoItem.TodoItemError.failureParseNSManagedObject))
+                    }
+                }
+            } catch let error as NSError {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
             }
-        } catch let error as NSError {
-            completion(.failure(error))
         }
     }
-
+    
     func editTodoItem(
         at id: String,
         to item: TodoItem,
@@ -114,26 +129,34 @@ final class DefaultFileCacheService: FileCacheService {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        let predicate = NSPredicate(format: "\(Key.id) == %@", id)
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "TodoItemEntity")
-        
-        fetchRequest.predicate = predicate
-        
-        do {
-            let objects = try managedContext.fetch(fetchRequest)
-            if objects.count > 0 {
-                let objectToEdit = objects[0]
-                item.setValues(to: objectToEdit)
-                
-                try managedContext.save()
-                completion(.success(item))
-            } else {
-                completion(.failure(TodoItem.TodoItemError.failureParseNSManagedObject))
+        isolationQueue.async(flags: .barrier) {
+            let managedContext = appDelegate.persistentContainer.viewContext
+            
+            let predicate = NSPredicate(format: "\(Key.id) == %@", id)
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "TodoItemEntity")
+            
+            fetchRequest.predicate = predicate
+            
+            do {
+                let objects = try managedContext.fetch(fetchRequest)
+                if objects.count > 0 {
+                    let objectToEdit = objects[0]
+                    item.setValues(to: objectToEdit)
+                    
+                    try managedContext.save()
+                    DispatchQueue.main.async {
+                        completion(.success(item))
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        completion(.failure(TodoItem.TodoItemError.failureParseNSManagedObject))
+                    }
+                }
+            } catch let error as NSError {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
             }
-        } catch let error as NSError {
-            completion(.failure(error))
         }
     }
     
@@ -143,23 +166,28 @@ final class DefaultFileCacheService: FileCacheService {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest =
-        NSFetchRequest<NSManagedObject>(entityName: "TodoItemEntity")
-        
-        do {
-            let objects = try managedContext.fetch(fetchRequest)
+        isolationQueue.sync {
+            let managedContext = appDelegate.persistentContainer.viewContext
             
-            var itemsToReturn: [TodoItem] = []
-            try objects.forEach { object in
-                let item = try TodoItem(from: object)
-                itemsToReturn.append(item)
-                items[item.id] = item
+            let fetchRequest =
+            NSFetchRequest<NSManagedObject>(entityName: "TodoItemEntity")
+            
+            do {
+                let objects = try managedContext.fetch(fetchRequest)
+                var itemsToReturn: [TodoItem] = []
+                
+                try objects.forEach { object in
+                    let item = try TodoItem(from: object)
+                    itemsToReturn.append(item)
+                }
+                DispatchQueue.main.async {
+                    completion(.success(itemsToReturn))
+                }
+            } catch let error as NSError {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
             }
-            completion(.success(itemsToReturn))
-        } catch let error as NSError {
-            completion(.failure(error))
         }
     }
 }

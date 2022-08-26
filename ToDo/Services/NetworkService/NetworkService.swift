@@ -52,7 +52,7 @@ final class DefaultNetworkService: NetworkService {
     private var revision: Int = 0
     private let baseURL: String = "https://beta.mrdekk.ru/todobackend"
     
-    let timeout: Double = 3.0
+    let timeout: Double = 2.0
     
     private let urlSession: URLSession
     
