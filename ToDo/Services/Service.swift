@@ -20,6 +20,16 @@ final class Service {
     
     private var isDirty: Bool = false
     
+    let defaults = UserDefaults.standard
+    private var cacheRevision: Int {
+        get {
+            defaults.integer(forKey: "Revision")
+        }
+        set {
+            defaults.set(newValue, forKey: "Revision")
+        }
+    }
+    
     func getAllTodoItems(completion: @escaping (Result<[TodoItem], Error>) -> Void) {
         // Достаем все локальные дела
         fileCacheService.load { result in
@@ -46,50 +56,10 @@ final class Service {
             
             switch result {
             case .success(let todoItems):
-                // Добавляем для дальнейшего патча уникальные и те,
-                // которые обновлялись позднее
-                for item in todoItems {
-                    guard let itemInFileCache = self.items[item.id] else {
-                        // Если такого не было в кэше
-                        // добавим в коллекцию для синка
-                        // + добавим в кэш
-                        self.fileCacheService.insert(item) { result in
-                            switch result {
-                            case .success(let returnedItem):
-                                self.items[returnedItem.id] = returnedItem
-                            case .failure:
-                                self.items[item.id] = item
-                            }
-                        }
-                        continue
-                    }
-                    
-                    // Если такой был в кэше, то сравниваем даты изменения
-                    // Если в сети оказался новее, то сохраняем его
-                    if
-                        let networkChangedAt = item.changedAt?.timeIntervalSince1970,
-                        let fileCacheChangedAt = itemInFileCache.changedAt?.timeIntervalSince1970,
-                        networkChangedAt > fileCacheChangedAt {
-                        // Удалим старый
-                        let oldId = itemInFileCache.id
-                        self.items[oldId] = nil
-                        
-                        // Добавим новый в коллекцию для синка
-                        self.fileCacheService.editTodoItem(at: oldId, to: item) { result in
-                            switch result {
-                            case .success(let editedItem):
-                                self.items[editedItem.id] = editedItem
-                            case .failure:
-                                self.items[item.id] = item
-                            }
-                        }
-                    }
-                }
-                
-                // Смешанные из сети и кэша дела отправляем на синк
-                DispatchQueue.main.async {
+                if self.cacheRevision == self.networkService.revision {
                     self.updateIfNeeded()
-                    // Теперь на сети и на таблице будут синканные данные
+                } else {
+                    self.updateWithVariousRevision(todoItems: todoItems)
                 }
             case .failure:
                 self.isDirty = true
@@ -123,6 +93,8 @@ final class Service {
                 
                 switch result {
                 case .success(let returnedItem):
+                    self.cacheRevision = self.networkService.revision
+                    
                     guard self.requestStopped != nil else {
                         return
                     }
@@ -163,6 +135,8 @@ final class Service {
                 
                 switch result {
                 case .success(let returnedItem):
+                    self.cacheRevision = self.networkService.revision
+                    
                     guard self.requestStopped != nil else {
                         return
                     }
@@ -208,6 +182,8 @@ final class Service {
                 
                 switch result {
                 case .success(let returnedItem):
+                    self.cacheRevision = self.networkService.revision
+                    
                     guard self.requestStopped != nil else {
                         return
                     }
@@ -224,6 +200,54 @@ final class Service {
         }
     }
     
+    private func updateWithVariousRevision(todoItems: [TodoItem]) {
+            // Добавляем для дальнейшего патча уникальные и те,
+            // которые обновлялись позднее
+            for item in todoItems {
+                guard let itemInFileCache = self.items[item.id] else {
+                    // Если такого не было в кэше
+                    // добавим в коллекцию для синка
+                    // + добавим в кэш
+                    self.fileCacheService.insert(item) { result in
+                        switch result {
+                        case .success(let returnedItem):
+                            self.items[returnedItem.id] = returnedItem
+                        case .failure:
+                            self.items[item.id] = item
+                        }
+                    }
+                    continue
+                }
+                
+                // Если такой был в кэше, то сравниваем даты изменения
+                // Если в сети оказался новее, то сохраняем его
+                if
+                    let networkChangedAt = item.changedAt?.timeIntervalSince1970,
+                    let fileCacheChangedAt = itemInFileCache.changedAt?.timeIntervalSince1970,
+                    networkChangedAt > fileCacheChangedAt {
+                    // Удалим старый
+                    let oldId = itemInFileCache.id
+                    self.items[oldId] = nil
+                    
+                    // Добавим новый в коллекцию для синка
+                    self.fileCacheService.editTodoItem(at: oldId, to: item) { result in
+                        switch result {
+                        case .success(let editedItem):
+                            self.items[editedItem.id] = editedItem
+                        case .failure:
+                            self.items[item.id] = item
+                        }
+                    }
+                }
+            }
+            
+            // Смешанные из сети и кэша дела отправляем на синк
+            DispatchQueue.main.async {
+                self.updateIfNeeded()
+                // Теперь на сети и на таблице будут синканные данные
+            }
+        }
+    
     private func updateAllTodoItems() {
         networkService.updateAllTodoItems(
             items.values.map { $0 as TodoItem }
@@ -233,6 +257,8 @@ final class Service {
             }
             switch result {
             case .success(let todoItems):
+                self.cacheRevision = self.networkService.revision
+
                 self.items.keys.forEach { key in
                     self.items[key] = nil
                 }

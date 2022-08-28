@@ -49,7 +49,7 @@ enum NetworkServiceError: Error {
 
 final class DefaultNetworkService: NetworkService {
     
-    private var revision: Int = 0
+    private(set) var revision: Int = 0
     private let baseURL: String = "https://beta.mrdekk.ru/todobackend"
     
     let timeout: Double = 2.0
