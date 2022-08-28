@@ -91,8 +91,7 @@ final class Service {
                     self.updateIfNeeded()
                     // Теперь на сети и на таблице будут синканные данные
                 }
-            case .failure(let error):
-                print(error.localizedDescription)
+            case .failure:
                 self.isDirty = true
             }
         }
@@ -130,7 +129,7 @@ final class Service {
                     self.requestStopped!()
                     
                     self.items[returnedItem.id] = returnedItem
-                case .failure(_):
+                case .failure:
                     self.isDirty = true
                     self.items[todoItem.id] = todoItem
                 }
@@ -170,7 +169,7 @@ final class Service {
                     self.requestStopped!()
                     // Удаление в сервисе
                     self.items[returnedItem.id] = nil
-                case .failure(_):
+                case .failure:
                     guard self.items[id] != nil else {
                         return
                     }
@@ -214,7 +213,7 @@ final class Service {
                     }
                     self.requestStopped!()
                     self.items[id] = returnedItem
-                case .failure(_):
+                case .failure:
                     guard self.items[id] != nil else {
                         return
                     }

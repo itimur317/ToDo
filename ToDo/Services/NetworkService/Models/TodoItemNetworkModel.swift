@@ -29,43 +29,13 @@ struct TodoItemNetworkModel: Codable {
     }
     
     init(from todoItem: TodoItem) {
-        id = todoItem.id
-        text = todoItem.text
-        importance = todoItem.importance.rawValue
-        
-        if let deadline = todoItem.deadlineAt?.timeIntervalSince1970 {
-            deadlineAt = Int(deadline)
-        } else {
-            deadlineAt = nil
-        }
-        
-        isDone = todoItem.isDone
-        createdAt = Int(todoItem.createdAt.timeIntervalSince1970)
-        changedAt = Int((todoItem.changedAt ?? todoItem.createdAt).timeIntervalSince1970)
-        deviceId = UIDevice.current.identifierForVendor?.uuidString ?? ""
-    }
-    
-    var todoItem: TodoItem {
-        guard let deadlineAt = deadlineAt else {
-            return TodoItem(
-                text: text,
-                importance: Importance(rawValue: importance) ?? .basic,
-                isDone: isDone,
-                createdAt: Date(timeIntervalSince1970: TimeInterval(createdAt)),
-                id: id,
-                deadlineAt: nil,
-                changedAt: Date(timeIntervalSince1970: TimeInterval(changedAt))
-            )
-        }
-        
-        return TodoItem(
-            text: text,
-            importance: Importance(rawValue: importance) ?? .basic,
-            isDone: isDone,
-            createdAt: Date(timeIntervalSince1970: TimeInterval(createdAt)),
-            id: id,
-            deadlineAt: Date(timeIntervalSince1970: TimeInterval(deadlineAt)),
-            changedAt: Date(timeIntervalSince1970: TimeInterval(changedAt))
-        )
+        self.id = todoItem.id
+        self.text = todoItem.text
+        self.importance = todoItem.importance.rawValue
+        self.deadlineAt = todoItem.deadlineAt.flatMap { Int($0.timeIntervalSince1970) }
+        self.isDone = todoItem.isDone
+        self.createdAt = Int(todoItem.createdAt.timeIntervalSince1970)
+        self.changedAt = Int((todoItem.changedAt ?? todoItem.createdAt).timeIntervalSince1970)
+        self.deviceId = UIDevice.current.identifierForVendor?.uuidString ?? ""
     }
 }

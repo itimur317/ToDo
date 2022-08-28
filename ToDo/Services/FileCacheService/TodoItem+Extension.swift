@@ -52,4 +52,28 @@ extension TodoItem {
         item.setValue(changedAt, forKeyPath: DefaultFileCacheService.Key.changedAt)
         item.setValue(createdAt, forKeyPath: DefaultFileCacheService.Key.createdAt)
     }
+    
+    static func map(from dto: TodoItemNetworkModel) -> TodoItem {
+        guard let deadlineAt = dto.deadlineAt else {
+            return TodoItem(
+                text: dto.text,
+                importance: Importance(rawValue: dto.importance) ?? .basic,
+                isDone: dto.isDone,
+                createdAt: Date(timeIntervalSince1970: TimeInterval(dto.createdAt)),
+                id: dto.id,
+                deadlineAt: nil,
+                changedAt: Date(timeIntervalSince1970: TimeInterval(dto.changedAt))
+            )
+        }
+        
+        return TodoItem(
+            text: dto.text,
+            importance: Importance(rawValue: dto.importance) ?? .basic,
+            isDone: dto.isDone,
+            createdAt: Date(timeIntervalSince1970: TimeInterval(dto.createdAt)),
+            id: dto.id,
+            deadlineAt: Date(timeIntervalSince1970: TimeInterval(deadlineAt)),
+            changedAt: Date(timeIntervalSince1970: TimeInterval(dto.changedAt))
+        )
+    }
 }
