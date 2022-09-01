@@ -103,7 +103,7 @@ final class DefaultNetworkService: NetworkService {
                         let data = data,
                         let httpResponse = response as? HTTPURLResponse,
                         let listNetworkModel = try? self.jsonDecoder.decode(
-                            ListNetworkModel.self,
+                            TodoListDTO.self,
                             from: data
                         ),
                         httpResponse.statusCode == 200
@@ -152,9 +152,9 @@ final class DefaultNetworkService: NetworkService {
             ]
             
             // HTTP-Body
-            let listNetworkModel = ListNetworkModel(
+            let listNetworkModel = TodoListDTO(
                 list: items.map {
-                    TodoItemNetworkModel(from: $0)
+                    TodoItemDTO(from: $0)
                 }
             )
             
@@ -178,7 +178,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let listNetworkModel = try? self.jsonDecoder.decode(
-                        ListNetworkModel.self,
+                        TodoListDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -236,7 +236,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -284,8 +284,8 @@ final class DefaultNetworkService: NetworkService {
             ]
             
             // HTTP-Body
-            let networkModel = TodoItemNetworkModel(from: item)
-            let requestNetworkModel = ElementNetworkModel(element: networkModel)
+            let networkModel = TodoItemDTO(from: item)
+            let requestNetworkModel = ElementDTO(element: networkModel)
             
             do {
                 urlRequest.httpBody = try self.jsonEncoder.encode(requestNetworkModel)
@@ -307,7 +307,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -357,8 +357,8 @@ final class DefaultNetworkService: NetworkService {
             ]
             
             // HTTP-Body
-            let networkModel = TodoItemNetworkModel(from: item)
-            let requestNetworkModel = ElementNetworkModel(element: networkModel)
+            let networkModel = TodoItemDTO(from: item)
+            let requestNetworkModel = ElementDTO(element: networkModel)
             
             do {
                 urlRequest.httpBody = try self.jsonEncoder.encode(requestNetworkModel)
@@ -380,7 +380,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -439,7 +439,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200

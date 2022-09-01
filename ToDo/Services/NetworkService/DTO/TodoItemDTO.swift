@@ -7,7 +7,7 @@
 
 import TodoItem
 
-struct TodoItemNetworkModel: Codable {
+struct TodoItemDTO: Codable {
     let id: String
     let text: String
     let importance: String

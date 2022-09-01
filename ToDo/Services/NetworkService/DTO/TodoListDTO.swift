@@ -1,28 +1,28 @@
 //
-//  ElementNetworkModel.swift
+//  ListNetworkModel.swift
 //  ToDo
 //
 //  Created by Timur on 18.08.2022.
 //
 
-struct ElementNetworkModel: Codable {
+struct TodoListDTO: Codable {
     let status: String?
-    let element: TodoItemNetworkModel
+    let list: [TodoItemDTO]
     let revision: Int?
     
     enum CodingKeys: String, CodingKey {
         case status
-        case element
+        case list
         case revision
     }
     
     init(
-        element: TodoItemNetworkModel,
+        list: [TodoItemDTO],
         status: String? = nil,
         revision: Int? = nil
     ) {
         self.status = status
-        self.element = element
+        self.list = list
         self.revision = revision
     }
 }

@@ -53,7 +53,7 @@ extension TodoItem {
         item.setValue(createdAt, forKeyPath: DefaultFileCacheService.Key.createdAt)
     }
     
-    static func map(from dto: TodoItemNetworkModel) -> TodoItem {
+    static func map(from dto: TodoItemDTO) -> TodoItem {
         guard let deadlineAt = dto.deadlineAt else {
             return TodoItem(
                 text: dto.text,
