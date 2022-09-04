@@ -49,10 +49,10 @@ enum NetworkServiceError: Error {
 
 final class DefaultNetworkService: NetworkService {
     
-    private var revision: Int = 0
+    private(set) var revision: Int = 0
     private let baseURL: String = "https://beta.mrdekk.ru/todobackend"
     
-    let timeout: Double = 3.0
+    let timeout: Double = 2.0
     
     private let urlSession: URLSession
     
@@ -73,7 +73,7 @@ final class DefaultNetworkService: NetworkService {
     }
     
     func getAllTodoItems(completion: @escaping (Result<[TodoItem], Error>) -> Void) {
-        isolationQueue.async(flags: .barrier) { [weak self] in
+        isolationQueue.async { [weak self] in
             guard
                 let self = self,
                 let url = URL(string: "\(self.baseURL)/list") else {
@@ -103,7 +103,7 @@ final class DefaultNetworkService: NetworkService {
                         let data = data,
                         let httpResponse = response as? HTTPURLResponse,
                         let listNetworkModel = try? self.jsonDecoder.decode(
-                            ListNetworkModel.self,
+                            TodoListDTO.self,
                             from: data
                         ),
                         httpResponse.statusCode == 200
@@ -118,7 +118,7 @@ final class DefaultNetworkService: NetworkService {
                         self.revision = newRevision
                     }
                     
-                    let listTodoItems = listNetworkModel.list.map { $0.todoItem }
+                    let listTodoItems = listNetworkModel.list.map { TodoItem.map(from: $0) }
                     DispatchQueue.main.async {
                         completion(.success(listTodoItems))
                     }
@@ -132,7 +132,7 @@ final class DefaultNetworkService: NetworkService {
         _ items: [TodoItem],
         completion: @escaping (Result<[TodoItem], Error>) -> Void
     ) {
-        isolationQueue.async(flags: .barrier) { [weak self] in
+        isolationQueue.async { [weak self] in
             guard
                 let self = self,
                 let url = URL(string: "\(self.baseURL)/list") else {
@@ -152,9 +152,9 @@ final class DefaultNetworkService: NetworkService {
             ]
             
             // HTTP-Body
-            let listNetworkModel = ListNetworkModel(
+            let listNetworkModel = TodoListDTO(
                 list: items.map {
-                    TodoItemNetworkModel(from: $0)
+                    TodoItemDTO(from: $0)
                 }
             )
             
@@ -178,7 +178,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let listNetworkModel = try? self.jsonDecoder.decode(
-                        ListNetworkModel.self,
+                        TodoListDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -193,7 +193,7 @@ final class DefaultNetworkService: NetworkService {
                     self.revision = newRevision
                 }
                 
-                let listTodoItems = listNetworkModel.list.map { $0.todoItem }
+                let listTodoItems = listNetworkModel.list.map { TodoItem.map(from: $0) }
                 DispatchQueue.main.async {
                     completion(.success(listTodoItems))
                 }
@@ -206,7 +206,7 @@ final class DefaultNetworkService: NetworkService {
         by id: String,
         completion: @escaping (Result<TodoItem, Error>
         ) -> Void) {
-        isolationQueue.async(flags: .barrier) { [weak self] in
+        isolationQueue.async { [weak self] in
             guard
                 let self = self,
                 let url = URL(string: "\(self.baseURL)/list/\(id)") else {
@@ -236,7 +236,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -251,7 +251,7 @@ final class DefaultNetworkService: NetworkService {
                     self.revision = newRevision
                 }
                 
-                let todoItem = elementNetworkModel.element.todoItem
+                let todoItem = TodoItem.map(from: elementNetworkModel.element)
                 DispatchQueue.main.async {
                     completion(.success(todoItem))
                 }
@@ -264,7 +264,7 @@ final class DefaultNetworkService: NetworkService {
         _ item: TodoItem,
         completion: @escaping (Result<TodoItem, Error>
         ) -> Void) {
-        isolationQueue.async(flags: .barrier) { [weak self] in
+        isolationQueue.async { [weak self] in
             guard
                 let self = self,
                 let url = URL(string: "\(self.baseURL)/list") else {
@@ -284,8 +284,8 @@ final class DefaultNetworkService: NetworkService {
             ]
             
             // HTTP-Body
-            let networkModel = TodoItemNetworkModel(from: item)
-            let requestNetworkModel = ElementNetworkModel(element: networkModel)
+            let networkModel = TodoItemDTO(from: item)
+            let requestNetworkModel = ElementDTO(element: networkModel)
             
             do {
                 urlRequest.httpBody = try self.jsonEncoder.encode(requestNetworkModel)
@@ -307,7 +307,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -322,7 +322,7 @@ final class DefaultNetworkService: NetworkService {
                     self.revision = newRevision
                 }
                 
-                let todoItem = elementNetworkModel.element.todoItem
+                let todoItem = TodoItem.map(from: elementNetworkModel.element)
                 DispatchQueue.main.async {
                     completion(.success(todoItem))
                 }
@@ -337,7 +337,7 @@ final class DefaultNetworkService: NetworkService {
         to item: TodoItem,
         completion: @escaping (Result<TodoItem, Error>
         ) -> Void) {
-        isolationQueue.async(flags: .barrier) { [weak self] in
+        isolationQueue.async { [weak self] in
             guard
                 let self = self,
                 let url = URL(string: "\(self.baseURL)/list/\(id)") else {
@@ -357,8 +357,8 @@ final class DefaultNetworkService: NetworkService {
             ]
             
             // HTTP-Body
-            let networkModel = TodoItemNetworkModel(from: item)
-            let requestNetworkModel = ElementNetworkModel(element: networkModel)
+            let networkModel = TodoItemDTO(from: item)
+            let requestNetworkModel = ElementDTO(element: networkModel)
             
             do {
                 urlRequest.httpBody = try self.jsonEncoder.encode(requestNetworkModel)
@@ -380,7 +380,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -395,7 +395,7 @@ final class DefaultNetworkService: NetworkService {
                     self.revision = newRevision
                 }
                 
-                let todoItem = elementNetworkModel.element.todoItem
+                let todoItem = TodoItem.map(from: elementNetworkModel.element)
                 DispatchQueue.main.async {
                     completion(.success(todoItem))
                 }
@@ -408,7 +408,7 @@ final class DefaultNetworkService: NetworkService {
         at id: String,
         completion: @escaping (Result<TodoItem, Error>
         ) -> Void) {
-        isolationQueue.async(flags: .barrier) { [weak self] in
+        isolationQueue.async { [weak self] in
             guard
                 let self = self,
                 let url = URL(string: "\(self.baseURL)/list/\(id)") else {
@@ -439,7 +439,7 @@ final class DefaultNetworkService: NetworkService {
                     let data = data,
                     let httpResponse = response as? HTTPURLResponse,
                     let elementNetworkModel = try? self.jsonDecoder.decode(
-                        ElementNetworkModel.self,
+                        ElementDTO.self,
                         from: data
                     ),
                     httpResponse.statusCode == 200
@@ -454,7 +454,7 @@ final class DefaultNetworkService: NetworkService {
                     self.revision = newRevision
                 }
                 
-                let todoItem = elementNetworkModel.element.todoItem
+                let todoItem = TodoItem.map(from: elementNetworkModel.element)
                 DispatchQueue.main.async {
                     completion(.success(todoItem))
                 }

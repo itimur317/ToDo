@@ -24,9 +24,9 @@ protocol ListVCProtocol: AnyObject {
 }
 
 final class ListVC: UIViewController,
-                             UITableViewDelegate,
-                             UITableViewDataSource,
-                             ListVCProtocol {
+                    UITableViewDelegate,
+                    UITableViewDataSource,
+                    ListVCProtocol {
     
     private let presenter: ListPresenterProtocol
     
