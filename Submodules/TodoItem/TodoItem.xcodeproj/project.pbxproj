@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		395A1EE228A33CF1008B54C9 /* ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395A1EE128A33CF1008B54C9 /* ImageProvider.swift */; };
+		39CDA15328B43FDA00A3475B /* TodoItem+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CDA15228B43FDA00A3475B /* TodoItem+Extension.swift */; };
 		39CDE28928A3310A00C550CF /* TodoItem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39CDE28028A3310A00C550CF /* TodoItem.framework */; };
 		39CDE28E28A3310A00C550CF /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CDE28D28A3310A00C550CF /* TodoItemTests.swift */; };
 		39CDE28F28A3310A00C550CF /* TodoItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 39CDE28328A3310A00C550CF /* TodoItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		395A1EE128A33CF1008B54C9 /* ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProvider.swift; sourceTree = "<group>"; };
+		39CDA15228B43FDA00A3475B /* TodoItem+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItem+Extension.swift"; sourceTree = "<group>"; };
 		39CDE28028A3310A00C550CF /* TodoItem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TodoItem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39CDE28328A3310A00C550CF /* TodoItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodoItem.h; sourceTree = "<group>"; };
 		39CDE28828A3310A00C550CF /* TodoItemTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodoItemTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +88,7 @@
 				39CDE29C28A331A900C550CF /* ParseJSON.swift */,
 				39CDE29A28A3319200C550CF /* Importance.swift */,
 				395A1EE128A33CF1008B54C9 /* ImageProvider.swift */,
+				39CDA15228B43FDA00A3475B /* TodoItem+Extension.swift */,
 				39CDE2A128A337B900C550CF /* Assets.xcassets */,
 			);
 			path = TodoItem;
@@ -213,6 +216,7 @@
 			files = (
 				395A1EE228A33CF1008B54C9 /* ImageProvider.swift in Sources */,
 				39CDE29928A3317C00C550CF /* TodoItem.swift in Sources */,
+				39CDA15328B43FDA00A3475B /* TodoItem+Extension.swift in Sources */,
 				39CDE29B28A3319200C550CF /* Importance.swift in Sources */,
 				39CDE29D28A331A900C550CF /* ParseJSON.swift in Sources */,
 			);

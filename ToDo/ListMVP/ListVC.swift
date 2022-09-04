@@ -1,5 +1,5 @@
 //
-//  ListTodoItemsVC.swift
+//  ListVC.swift
 //  ToDo
 //
 //  Created by Timur on 03.08.2022.
@@ -9,25 +9,28 @@ import UIKit
 import TodoItem
 import CocoaLumberjack
 
-protocol ListTodoItemsVCProtocol: AnyObject {
+protocol ListVCProtocol: AnyObject {
     func updateShowHideLabel()
     func updateTableView()
     
     func setDoneLabel(amount: Int)
     func alertWith(text: String)
     
-    func presentToEdit(todoItem: TodoItem, in: String)
-    func presentToCreate(in dir: String)
+    func presentToEdit(todoItem: TodoItem, using: Service)
+    func presentToCreate(using: Service)
+    
+    func startIndicator()
+    func stopIndicator()
 }
 
-final class ListTodoItemsVC: UIViewController,
+final class ListVC: UIViewController,
                              UITableViewDelegate,
                              UITableViewDataSource,
-                             ListTodoItemsVCProtocol {
+                             ListVCProtocol {
     
-    private let presenter: ListTodoItemsPresenterProtocol
+    private let presenter: ListPresenterProtocol
     
-    init(presenter: ListTodoItemsPresenter) {
+    init(presenter: ListPresenter) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -112,6 +115,13 @@ final class ListTodoItemsVC: UIViewController,
         return button
     }()
     
+    private lazy var networkActivityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.backgroundColor = UIColor(named: "listBackground")
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter.viewDidLoad()
@@ -142,6 +152,7 @@ final class ListTodoItemsVC: UIViewController,
         view.addSubview(showHideButton)
         view.addSubview(listTableView)
         view.addSubview(addTodoItemButton)
+        view.addSubview(networkActivityIndicator)
     }
     
     private func setDelegate() {
@@ -175,6 +186,23 @@ final class ListTodoItemsVC: UIViewController,
             ),
             showHideButton.heightAnchor.constraint(
                 equalToConstant: 15
+            )
+        ])
+        
+        NSLayoutConstraint.activate([
+            networkActivityIndicator.widthAnchor.constraint(
+                equalToConstant: 20
+            ),
+            networkActivityIndicator.heightAnchor.constraint(
+                equalToConstant: 20
+            ),
+            networkActivityIndicator.leadingAnchor.constraint(
+                equalTo: safeArea.leadingAnchor,
+                constant: 15
+            ),
+            networkActivityIndicator.bottomAnchor.constraint(
+                equalTo: safeArea.bottomAnchor,
+                constant: -15
             )
         ])
         
@@ -234,14 +262,14 @@ final class ListTodoItemsVC: UIViewController,
 
 // MARK: - UITableViewDelegate
 
-extension ListTodoItemsVC {
+extension ListVC {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case presenter.getTodoItemsCount():
             presenter.createTodoItem()
         default:
-            presenter.editTodoItem(at: indexPath.row)
+            presenter.presentToEditTodoItem(at: indexPath.row)
         }
     }
     
@@ -262,7 +290,7 @@ extension ListTodoItemsVC {
         if todoItem.isDone {
             return nil
         }
-                
+        
         let markAsDoneButton = UIContextualAction(style: .normal, title: "") { [weak self] (_, _, completion) in
             self?.presenter.markAsDone(todoItem: todoItem)
             completion(true)
@@ -291,10 +319,10 @@ extension ListTodoItemsVC {
             return nil
         }
         let todoItem = presenter.getTodoItems()[indexPath.row]
-                
+        
         // Delete button settings
         let deleteButton = UIContextualAction(style: .destructive, title: "") { [weak self] (_, _, completion) in
-            self?.presenter.deleteTodoItem(by: todoItem)
+            self?.presenter.deleteTodoItem(by: todoItem.id)
             completion(true)
         }
         let configDelete = UIImage.SymbolConfiguration(
@@ -309,7 +337,7 @@ extension ListTodoItemsVC {
         
         // Info button settings
         let infoButton = UIContextualAction(style: .destructive, title: "") { [weak self] (_, _, completion) in
-            self?.presenter.editTodoItem(at: indexPath.row)
+            self?.presenter.presentToEditTodoItem(at: indexPath.row)
             completion(true)
         }
         let configInfo = UIImage.SymbolConfiguration(
@@ -330,7 +358,7 @@ extension ListTodoItemsVC {
 
 // MARK: - UITableViewDataSource
 
-extension ListTodoItemsVC {
+extension ListVC {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         presenter.getTodoItemsCount() + 1
     }
@@ -373,9 +401,9 @@ extension ListTodoItemsVC {
     }
 }
 
-// MARK: - ListTodoItemsVCProtocol
+// MARK: - ListVCProtocol
 
-extension ListTodoItemsVC {
+extension ListVC {
     func updateShowHideLabel() {
         if showHideButton.titleLabel?.text == "Показать" {
             showHideButton.setTitle("Скрыть", for: .normal)
@@ -412,10 +440,24 @@ extension ListTodoItemsVC {
         )
     }
     
-    func presentToEdit(todoItem: TodoItem, in dir: String) {
-        let todoItemPresenter = TodoItemPresenter(to: .edit(todoItem: todoItem), in: dir)
+    func presentToEdit(todoItem: TodoItem, using storage: Service) {
+        let todoItemPresenter = TodoItemPresenter(to: .edit(todoItem: todoItem), using: storage)
         let todoItemVC = TodoItemVC(presenter: todoItemPresenter)
         todoItemPresenter.todoItemVC = todoItemVC
+        todoItemPresenter.listDelegate = presenter
+
+        let nav = UINavigationController(rootViewController: todoItemVC)
+        todoItemVC.isDismissed = { [weak self] in
+            self?.presenter.viewDidLoad()
+        }
+        self.present(nav, animated: true, completion: nil)
+    }
+    
+    func presentToCreate(using storage: Service) {
+        let todoItemPresenter = TodoItemPresenter(to: .createNew, using: storage)
+        let todoItemVC = TodoItemVC(presenter: todoItemPresenter)
+        todoItemPresenter.todoItemVC = todoItemVC
+        todoItemPresenter.listDelegate = presenter
         
         let nav = UINavigationController(rootViewController: todoItemVC)
         todoItemVC.isDismissed = { [weak self] in
@@ -424,15 +466,11 @@ extension ListTodoItemsVC {
         self.present(nav, animated: true, completion: nil)
     }
     
-    func presentToCreate(in dir: String) {
-        let todoItemPresenter = TodoItemPresenter(to: .createNew, in: dir)
-        let todoItemVC = TodoItemVC(presenter: todoItemPresenter)
-        todoItemPresenter.todoItemVC = todoItemVC
-        
-        let nav = UINavigationController(rootViewController: todoItemVC)
-        todoItemVC.isDismissed = { [weak self] in
-            self?.presenter.viewDidLoad()
-        }
-        self.present(nav, animated: true, completion: nil)
+    func startIndicator() {
+        networkActivityIndicator.startAnimating()
+    }
+    
+    func stopIndicator() {
+        networkActivityIndicator.stopAnimating()
     }
 }

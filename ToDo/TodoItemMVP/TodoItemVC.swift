@@ -66,6 +66,7 @@ final class TodoItemVC: UIViewController,
         textView.textColor = UIColor.lightGray
         textView.tintColor = UIColor(named: "cellText")
         textView.isScrollEnabled = false
+        textView.contentInset = UIEdgeInsets(top: 7, left: 10, bottom: 7, right: 10)
         textView.layer.cornerRadius = 20
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
